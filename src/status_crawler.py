@@ -2,7 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger(__name__)
-fileHandler = RotatingFileHandler('./status_crawler.log', maxBytes=1024*9, backupCount=9)
+fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024*9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
