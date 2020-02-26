@@ -40,15 +40,15 @@ def get_status(target=''):
     dead_num_int = int(re.sub(',', '', dead_num_str[0:len(dead_num_str) - 2]))
     logger.info("get_status: dead_num_int extracted | dead_num_int=" + str(dead_num_int))
 
-    result = {
+    collected_result = {
         'confirmed': confirmed_num_int,
         'unisolated': unisolated_num_int,
         'dead': dead_num_int
     }
-    logger.info("get_status: result generated | result=" + str(result))
+    logger.info("get_status: collected_result generated | collected_result=" + str(collected_result))
 
-    logger.info("get_status: function ended | result=" + str(result))
-    return result
+    logger.info("get_status: function ended | collected_result=" + str(collected_result))
+    return collected_result
 
 
 if __name__ == '__main__':
