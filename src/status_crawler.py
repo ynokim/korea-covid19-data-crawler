@@ -1,10 +1,9 @@
-import re
-
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
-
-
 def get_status(target=''):
+    import re
+
+    from urllib.request import urlopen
+    from bs4 import BeautifulSoup
+
     downloaded_html = urlopen(target)
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
 
