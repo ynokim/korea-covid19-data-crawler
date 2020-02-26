@@ -2,7 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger(__name__)
-fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024*9, backupCount=9)
+fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024 * 9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
@@ -28,7 +28,8 @@ def get_patient_data(page_index=0, patient_id=0):
         'sex': 1 if patient_info_extracted[3].text[0] == '남' else 0,
         'nationality': re.findall('\(([^,]+),', patient_info_extracted[3].text)[0],
         'age': re.findall('\'([^,]+)\)', patient_info_extracted[3].text)[0],
-        'causation': '' if re.findall('([^|]+) \([확인0-9차]{2}', patient_info_extracted[5].text)[0] == '확인 중' else re.findall('([^|]+) \([확인0-9차]{2}', patient_info_extracted[5].text)[0],
+        'causation': '' if re.findall('([^|]+) \([확인0-9차]{2}', patient_info_extracted[5].text)[0] == '확인 중' else
+        re.findall('([^|]+) \([확인0-9차]{2}', patient_info_extracted[5].text)[0],
         'order': -1 if re.findall(' \(([확인 중0-9차]+)\)', patient_info_extracted[5].text)[0] == '확인 중' else int(
             re.sub('[^0-9]', '', re.findall(' \(([확인 중0-9차]+)\)', patient_info_extracted[5].text)[0])),
         'confirmed_month': int(re.findall('([0-9]+).', patient_info_extracted[7].text)[0]),
