@@ -6,6 +6,7 @@ fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024*9, b
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
+logger.info("logging start")
 
 
 def get_status(target=''):
