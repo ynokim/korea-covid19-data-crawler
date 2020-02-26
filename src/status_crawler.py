@@ -21,31 +21,36 @@ def get_status(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_status: html parsed to beautifulsoup object")
 
-    result = beautifulsoup_object.findAll('a', class_='num')
+    numbers = beautifulsoup_object.findAll('a', class_='num')
     logger.info("get_status: result picked out")
 
-    confirmed_num_str = result[0].text
+    confirmed_num_str = numbers[0].text
     logger.info("get_status: confirmed_num_str extracted | dead_num_int=" + str(confirmed_num_str))
     confirmed_num_int = int(re.sub(',', '', confirmed_num_str[0:len(confirmed_num_str) - 2]))
     logger.info("get_status: confirmed_num_int extracted | dead_num_int=" + str(confirmed_num_int))
 
-    unisolated_num_str = result[1].text
+    unisolated_num_str = numbers[1].text
     logger.info("get_status: unisolated_num_str extracted | dead_num_int=" + str(unisolated_num_str))
     unisolated_num_int = int(re.sub(',', '', unisolated_num_str[0:len(unisolated_num_str) - 2]))
     logger.info("get_status: unisolated_num_int extracted | dead_num_int=" + str(unisolated_num_int))
 
-    dead_num_str = result[2].text
+    dead_num_str = numbers[2].text
     logger.info("get_status: dead_num_str extracted | dead_num_int=" + str(dead_num_str))
     dead_num_int = int(re.sub(',', '', dead_num_str[0:len(dead_num_str) - 2]))
     logger.info("get_status: dead_num_int extracted | dead_num_int=" + str(dead_num_int))
 
-    logger.info("get_status: function ended | confirmed_num_int=" + str(confirmed_num_int) + " | unisolated_num_int=" + str(unisolated_num_int) + " | dead_num_int=" + str(dead_num_int))
-    return confirmed_num_int, unisolated_num_int, dead_num_int
+    result = {
+        'confirmed': confirmed_num_int,
+        'unisolated': unisolated_num_int,
+        'dead': dead_num_int
+    }
+    logger.info("get_status: result generated | result=" + str(result))
+
+    logger.info("get_status: function ended | result=" + str(result))
+    return result
 
 
 if __name__ == '__main__':
-    confirmed, unisolated, dead = get_status(target="http://ncov.mohw.go.kr/index_main.jsp")
+    result = get_status(target="http://ncov.mohw.go.kr/index_main.jsp")
 
-    print(confirmed)
-    print(unisolated)
-    print(dead)
+    print(result)
