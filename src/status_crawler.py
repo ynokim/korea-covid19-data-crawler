@@ -45,6 +45,7 @@ def get_status(target=''):
 
 if __name__ == '__main__':
     confirmed, unisolated, dead = get_status(target="http://ncov.mohw.go.kr/index_main.jsp")
+
     print(confirmed)
     print(unisolated)
     print(dead)
