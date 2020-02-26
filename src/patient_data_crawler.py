@@ -175,10 +175,10 @@ def get_patient_num():
     beautifulsoup_object = BeautifulSoup(html, "html.parser")
     logger.info("get_patient_num: html parsed to beautifulsoup object")
 
-    result = beautifulsoup_object.find('a', title="클릭하시면 이동경로가 열립니다.")
-    logger.info("get_patient_num: result extracted | result=" + str(result))
+    patient_num_raw = beautifulsoup_object.find('a', title="클릭하시면 이동경로가 열립니다.")
+    logger.info("get_patient_num: patient_num_raw picked up")
 
-    patient_num_int = int(re.findall('#no([0-9]+)', str(result))[0])
+    patient_num_int = int(re.findall('#no([0-9]+)', str(patient_num_raw))[0])
     logger.info("get_patient_num: patient_num_int extracted | patient_num_int=" + str(patient_num_int))
 
     logger.info("get_patient_num: function ended | patient_num_int=" + str(patient_num_int))
