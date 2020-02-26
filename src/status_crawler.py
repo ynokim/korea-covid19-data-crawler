@@ -22,20 +22,20 @@ def get_status(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_status: html parsed to beautifulsoup object")
 
-    numbers = beautifulsoup_object.findAll('a', class_='num')
-    logger.info("get_status: result picked out")
+    numbers_raw = beautifulsoup_object.findAll('a', class_='num')
+    logger.info("get_status: numbers_raw picked out")
 
-    confirmed_num_str = numbers[0].text
+    confirmed_num_str = numbers_raw[0].text
     logger.info("get_status: confirmed_num_str extracted | dead_num_int=" + str(confirmed_num_str))
     confirmed_num_int = int(re.sub(',', '', confirmed_num_str[0:len(confirmed_num_str) - 2]))
     logger.info("get_status: confirmed_num_int extracted | dead_num_int=" + str(confirmed_num_int))
 
-    unisolated_num_str = numbers[1].text
+    unisolated_num_str = numbers_raw[1].text
     logger.info("get_status: unisolated_num_str extracted | dead_num_int=" + str(unisolated_num_str))
     unisolated_num_int = int(re.sub(',', '', unisolated_num_str[0:len(unisolated_num_str) - 2]))
     logger.info("get_status: unisolated_num_int extracted | dead_num_int=" + str(unisolated_num_int))
 
-    dead_num_str = numbers[2].text
+    dead_num_str = numbers_raw[2].text
     logger.info("get_status: dead_num_str extracted | dead_num_int=" + str(dead_num_str))
     dead_num_int = int(re.sub(',', '', dead_num_str[0:len(dead_num_str) - 2]))
     logger.info("get_status: dead_num_int extracted | dead_num_int=" + str(dead_num_int))
