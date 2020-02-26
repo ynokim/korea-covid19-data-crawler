@@ -227,13 +227,18 @@ def get_every_patient_data():
             patient_left_in_page = 10
             logger.info("get_patient_data: initialize patient_left_in_page | patient_left_in_page=" + str(patient_left_in_page))
 
-    logger.info("get_patient_data: function ended | patient_info_collected=" + str(patient_info_collected) + " | patient_path_info_list_collected=" + str(patient_path_info_list_collected) + " | patient_path_list_collected=" + str(patient_path_list_collected))
-    return patient_info_collected, patient_path_info_list_collected, patient_path_list_collected
+    collected_result = {
+        'patient_info': patient_info_collected,
+        'patient_path_info_list': patient_path_info_list_collected,
+        'patient_path_list': patient_path_list_collected
+    }
+    logger.info("get_patient_data: collected_result generated | collected_result=" + str(collected_result))
+
+    logger.info("get_patient_data: function ended | collected_result=" + str(collected_result))
+    return collected_result
 
 
 if __name__ == '__main__':
-    patient_info_result, patient_path_info_list_result, patient_path_list_result = get_every_patient_data()
+    result = get_every_patient_data()
 
-    print(patient_info_result)
-    print(patient_path_info_list_result)
-    print(patient_path_list_result)
+    print(result)
