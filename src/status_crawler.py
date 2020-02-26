@@ -3,22 +3,27 @@ import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
-target = "http://ncov.mohw.go.kr/index_main.jsp"
 
-downloadedHtml = urlopen(target)
-bsObject = BeautifulSoup(downloadedHtml, "html.parser")
+def get_status(target=''):
+    downloaded_html = urlopen(target)
+    beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
 
-result = bsObject.findAll('a', class_='num')
+    result = beautifulsoup_object.findAll('a', class_='num')
 
-confirmedNumStr = result[0].text
-confirmedNumInt = int(re.sub(',', '', confirmedNumStr[0:len(confirmedNumStr)-2]))
+    confirmed_num_str = result[0].text
+    confirmed_num_int = int(re.sub(',', '', confirmed_num_str[0:len(confirmed_num_str) - 2]))
 
-unisolatedNumStr = result[1].text
-unisolatedNumInt = int(re.sub(',', '', unisolatedNumStr[0:len(unisolatedNumStr)-2]))
+    unisolated_num_str = result[1].text
+    unisolated_num_int = int(re.sub(',', '', unisolated_num_str[0:len(unisolated_num_str) - 2]))
 
-deadNumStr = result[2].text
-deadNumInt = int(re.sub(',', '', deadNumStr[0:len(deadNumStr)-2]))
+    dead_num_str = result[2].text
+    dead_num_int = int(re.sub(',', '', dead_num_str[0:len(dead_num_str) - 2]))
 
-print(confirmedNumInt)
-print(unisolatedNumInt)
-print(deadNumInt)
+    return confirmed_num_int, unisolated_num_int, dead_num_int
+
+
+if __name__ == '__main__':
+    confirmed, unisolated, dead = get_status(target="http://ncov.mohw.go.kr/index_main.jsp")
+    print(confirmed)
+    print(unisolated)
+    print(dead)
