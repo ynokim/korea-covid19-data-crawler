@@ -170,9 +170,9 @@ def get_patient_num():
     from bs4 import BeautifulSoup
     logger.info("get_patient_num: packages loaded")
 
-    downloaded_html = urlopen("http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=1")
+    html = urlopen("http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=1")
     logger.info("get_patient_num: html downloaded")
-    beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
+    beautifulsoup_object = BeautifulSoup(html, "html.parser")
     logger.info("get_patient_num: html parsed to beautifulsoup object")
 
     result = beautifulsoup_object.find('a', title="클릭하시면 이동경로가 열립니다.")
