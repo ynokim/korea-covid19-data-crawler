@@ -66,7 +66,7 @@ def get_patient_data(page_index=0, patient_id=0):
                                 'patient_no': patient_id,
                                 'month': month,
                                 'date': date,
-                                'content': re.sub('([0-9]+월 [0-9]+일[~∼][0-9]월 [0-9]+일)', '', patient_path_text)
+                                'content': re.sub('\([0-9]+월 [0-9]+일[~∼][0-9]월 [0-9]+일\) ', '', patient_path_text)
                             }
                             patient_path_list.append(patient_path)
                     else:
@@ -75,7 +75,7 @@ def get_patient_data(page_index=0, patient_id=0):
                                 'patient_no': patient_id,
                                 'month': month,
                                 'date': date,
-                                'content': re.sub('([0-9]+월 [0-9]+일[~∼][0-9]월 [0-9]+일)', '', patient_path_text)
+                                'content': re.sub('\([0-9]+월 [0-9]+일[~∼][0-9]월 [0-9]+일\) ', '', patient_path_text)
                             }
                             patient_path_list.append(patient_path)
             elif date_period_identifier == ['일']:
@@ -87,7 +87,7 @@ def get_patient_data(page_index=0, patient_id=0):
                         'patient_no': patient_id,
                         'month': month,
                         'date': date,
-                        'content': re.sub('([0-9]+월 [0-9]+[~∼][0-9]+일)', '', patient_path_text)
+                        'content': re.sub('\([0-9]+월 [0-9]+[~∼][0-9]+일\) ', '', patient_path_text)
                     }
                     patient_path_list.append(patient_path)
             else:
@@ -95,7 +95,7 @@ def get_patient_data(page_index=0, patient_id=0):
                     'patient_no': patient_id,
                     'month': int(re.findall('\(([0-9]+)월 ', patient_path_text)[0]),
                     'date': int(re.findall(' ([0-9]+)일\)', patient_path_text)[0]),
-                    'content': re.sub('([0-9]+월 [0-9]+일)', '', patient_path_text)
+                    'content': re.sub('\([0-9]+월 [0-9]+일\) ', '', patient_path_text)
                 }
                 patient_path_list.append(patient_path)
 
