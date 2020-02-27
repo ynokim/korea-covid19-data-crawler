@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
-fileHandler = RotatingFileHandler('./log/patient_data_crawler.log', maxBytes=1024*1024*1024*9, backupCount=9)
+fileHandler = RotatingFileHandler('./log/patient_data_crawler.log', maxBytes=1024 * 1024 * 1024 * 9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
@@ -30,7 +30,8 @@ class PatientInfoPicker():
         return re.findall('\'([^,]+)\)', self.data[3].text)[0]
 
     def causation(self):
-        return '' if re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0] == '확인 중' else re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
+        return '' if re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0] == '확인 중' else \
+        re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
 
     def order(self):
         return -1 if re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0] == '확인 중' else int(
@@ -47,15 +48,17 @@ class PatientInfoPicker():
 
     def contacted(self):
         return -1 if re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[
-                               0] == '확인 중' else int(
+                         0] == '확인 중' else int(
             re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[0])
 
     def isolated_contacted(self):
-        return -1 if re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0] == '확인 중' else int(re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0])
+        return -1 if re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0] == '확인 중' else int(
+            re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0])
 
 
 def get_patient_data(page_index=0, patient_id=0):
-    logger.info("get_patient_data: function started | page_index=" + str(page_index) + " | patient_id=" + str(patient_id))
+    logger.info(
+        "get_patient_data: function started | page_index=" + str(page_index) + " | patient_id=" + str(patient_id))
 
     target = 'http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=' + str(page_index)
     logger.info("get_patient_data: target declared | target=" + target)
@@ -105,7 +108,8 @@ def get_patient_data(page_index=0, patient_id=0):
     logger.info("get_patient_data: day_in_month declared")
 
     for i in range(len(patient_path_extracted)):
-        logger.info("get_patient_data: processing patient_path_extracted " + str(i) + "/" + str(len(patient_path_extracted)-1))
+        logger.info("get_patient_data: processing patient_path_extracted " + str(i) + "/" + str(
+            len(patient_path_extracted) - 1))
         patient_path_text = str(patient_path_extracted[i].text)
         logger.info("get_patient_data: patient_path_text extracted | patient_path_text=" + patient_path_text)
 
@@ -121,9 +125,11 @@ def get_patient_data(page_index=0, patient_id=0):
         else:
             logger.info("get_patient_data: data confirmed as patient_path")
             month_period_identifier = re.findall('[~∼][0-9]+([월])', patient_path_text)
-            logger.info("get_patient_data: month_period_identifier picked out | month_period_identifier=" + str(month_period_identifier))
+            logger.info("get_patient_data: month_period_identifier picked out | month_period_identifier=" + str(
+                month_period_identifier))
             date_period_identifier = re.findall('[~∼][0-9]+([일])', patient_path_text)
-            logger.info("get_patient_data: date_period_identifier picked out | date_period_identifier=" + str(date_period_identifier))
+            logger.info("get_patient_data: date_period_identifier picked out | date_period_identifier=" + str(
+                date_period_identifier))
             if month_period_identifier == ['월']:
                 logger.info("get_patient_data: month_period_identifier has been confirmed that it is valid")
                 start_month = int(re.findall('\(([0-9]+)월 ', patient_path_text)[0])
@@ -183,7 +189,8 @@ def get_patient_data(page_index=0, patient_id=0):
                     patient_path_list.append(patient_path)
                     logger.info("get_patient_data: patient_path appended to patient_path_list")
             else:
-                logger.info("get_patient_data: It has been confirmed that neither month_period_identifier nor date_period_identifier is valid")
+                logger.info(
+                    "get_patient_data: It has been confirmed that neither month_period_identifier nor date_period_identifier is valid")
                 patient_path = {
                     'patient_no': patient_id,
                     'month': int(re.findall('\(([0-9]+)월 ', patient_path_text)[0]),
@@ -194,7 +201,9 @@ def get_patient_data(page_index=0, patient_id=0):
                 patient_path_list.append(patient_path)
                 logger.info("get_patient_data: patient_path appended to patient_path_list")
 
-    logger.info("get_patient_data: function ended | patient_info=" + str(patient_info) + " | patient_path_info_list=" + str(patient_path_info_list) + " | patient_path_list=" + str(patient_path_list))
+    logger.info(
+        "get_patient_data: function ended | patient_info=" + str(patient_info) + " | patient_path_info_list=" + str(
+            patient_path_info_list) + " | patient_path_list=" + str(patient_path_list))
     return patient_info, patient_path_info_list, patient_path_list
 
 
@@ -233,7 +242,8 @@ def get_every_patient_data():
     patient_id = patient_num
     logger.info("get_every_patient_data: patient_id has been set up | patient_id=" + str(patient_id))
     patient_left_in_page = 10
-    logger.info("get_every_patient_data: initialize patient_left_in_page | patient_left_in_page=" + str(patient_left_in_page))
+    logger.info(
+        "get_every_patient_data: initialize patient_left_in_page | patient_left_in_page=" + str(patient_left_in_page))
     page_index = 1
     logger.info("get_every_patient_data: initialize page_index | page_index=" + str(page_index))
 
@@ -241,7 +251,9 @@ def get_every_patient_data():
         logger.info("get_every_patient_data: processing patient_id " + str(patient_id))
         patient_info, patient_path_info_list, patient_path_list = get_patient_data(page_index=page_index,
                                                                                    patient_id=patient_id)
-        logger.info("get_every_patient_data: get data from get_patient_data function | patient_info=" + str(patient_info) + " | patient_path_info_list=" + str(patient_path_info_list) + " | patient_path_list=" + str(patient_path_list))
+        logger.info("get_every_patient_data: get data from get_patient_data function | patient_info=" + str(
+            patient_info) + " | patient_path_info_list=" + str(patient_path_info_list) + " | patient_path_list=" + str(
+            patient_path_list))
         patient_info_collected.insert(0, patient_info)
         logger.info("get_patient_data: patient_info inserted to patient_info_collected")
         patient_path_info_list_collected.insert(0, patient_path_info_list)
@@ -258,7 +270,8 @@ def get_every_patient_data():
             page_index += 1
             logger.info("get_patient_data: update page_index | page_index=" + str(page_index))
             patient_left_in_page = 10
-            logger.info("get_patient_data: initialize patient_left_in_page | patient_left_in_page=" + str(patient_left_in_page))
+            logger.info(
+                "get_patient_data: initialize patient_left_in_page | patient_left_in_page=" + str(patient_left_in_page))
 
     collected_result = {
         'patient_info': patient_info_collected,
