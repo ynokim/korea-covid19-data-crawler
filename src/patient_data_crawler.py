@@ -15,43 +15,55 @@ logger.info("every package loaded and start logging")
 
 class PatientInfoPicker():
     def __init__(self, data):
+        logger.info("PatientInfoPicker: instance created | data=" + str(data))
         self.data = data
 
     def patient_no(self):
+        logger.info("PatientInfoPicker: patient_no function called")
         return str(self.data[1].text)
 
     def sex(self):
+        logger.info("PatientInfoPicker: sex function called")
         return 1 if self.data[3].text[0] == '남' else 0
 
     def nationality(self):
+        logger.info("PatientInfoPicker: nationality function called")
         return re.findall('\(([^,]+),', self.data[3].text)[0]
 
     def age(self):
+        logger.info("PatientInfoPicker: age function called")
         return re.findall('\'([^,]+)\)', self.data[3].text)[0]
 
     def causation(self):
+        logger.info("PatientInfoPicker: causation function called")
         return '' if re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0] == '확인 중' else \
         re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
 
     def order(self):
+        logger.info("PatientInfoPicker: order function called")
         return -1 if re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0] == '확인 중' else int(
             re.sub('[^0-9]', '', re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0]))
 
     def confirmed_month(self):
+        logger.info("PatientInfoPicker: confirmed_month function called")
         return int(re.findall('([0-9]+).', self.data[7].text)[0])
 
     def confirmed_date(self):
+        logger.info("PatientInfoPicker: confirmed_date function called")
         return int(re.findall('[0-9].[^[0-9]+([0-9]+)', self.data[7].text)[0])
 
     def clinic(self):
+        logger.info("PatientInfoPicker: clinic function called")
         return '' if self.data[9].text == '확인 중' else self.data[9].text
 
     def contacted(self):
+        logger.info("PatientInfoPicker: contacted function called")
         return -1 if re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[
                          0] == '확인 중' else int(
             re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[0])
 
     def isolated_contacted(self):
+        logger.info("PatientInfoPicker: isolated_contacted function called")
         return -1 if re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0] == '확인 중' else int(
             re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0])
 
