@@ -5,3 +5,4 @@ venv/
 status-data/
 patient-data/
 mysql_property.py
+__pycache__/
