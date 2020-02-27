@@ -16,7 +16,6 @@ logger.info("every package loaded and start logging")
 class PatientInfoPicker():
     def __init__(self, data):
         self.data = data
-        return
 
     def patient_no(self):
         return str(self.data[1].text)
