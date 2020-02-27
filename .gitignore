@@ -4,3 +4,4 @@ venv/
 *.log
 status-data/
 patient-data/
+mysql_property.py
