@@ -1,12 +1,16 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
+import re
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
 logger = logging.getLogger(__name__)
 fileHandler = RotatingFileHandler('./log/patient_data_crawler.log', maxBytes=1024*1024*1024*9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
-logger.info("logging start")
+logger.info("every package loaded and start logging")
 
 
 class PatientInfoPicker():
@@ -21,61 +25,38 @@ class PatientInfoPicker():
         return 1 if self.data[3].text[0] == '남' else 0
 
     def nationality(self):
-        import re
-
         return re.findall('\(([^,]+),', self.data[3].text)[0]
 
     def age(self):
-        import re
-
         return re.findall('\'([^,]+)\)', self.data[3].text)[0]
 
     def causation(self):
-        import re
-
         return '' if re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0] == '확인 중' else re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
 
     def order(self):
-        import re
-
         return -1 if re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0] == '확인 중' else int(
             re.sub('[^0-9]', '', re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0]))
 
     def confirmed_month(self):
-        import re
-
         return int(re.findall('([0-9]+).', self.data[7].text)[0])
 
     def confirmed_date(self):
-        import re
-
         return int(re.findall('[0-9].[^[0-9]+([0-9]+)', self.data[7].text)[0])
 
     def clinic(self):
-        import re
-
         return '' if self.data[9].text == '확인 중' else self.data[9].text
 
     def contacted(self):
-        import re
-
         return -1 if re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[
                                0] == '확인 중' else int(
             re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[0])
 
     def isolated_contacted(self):
-        import re
-
         return -1 if re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0] == '확인 중' else int(re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0])
 
 
 def get_patient_data(page_index=0, patient_id=0):
     logger.info("get_patient_data: function started | page_index=" + str(page_index) + " | patient_id=" + str(patient_id))
-    import re
-
-    from urllib.request import urlopen
-    from bs4 import BeautifulSoup
-    logger.info("get_patient_data: packages loaded")
 
     target = 'http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=' + str(page_index)
     logger.info("get_patient_data: target declared | target=" + target)
@@ -220,10 +201,7 @@ def get_patient_data(page_index=0, patient_id=0):
 
 def get_patient_num():
     logger.info("get_patient_num: function started")
-    import re
 
-    from urllib.request import urlopen
-    from bs4 import BeautifulSoup
     logger.info("get_patient_num: packages loaded")
 
     html = urlopen("http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=1")
