@@ -3,3 +3,4 @@ venv/
 .idea/
 *.log
 status-data/
+patient-data/
