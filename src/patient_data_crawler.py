@@ -9,6 +9,66 @@ logger.setLevel(logging.INFO)
 logger.info("logging start")
 
 
+class PatientInfoPicker():
+    def __init__(self, data):
+        self.data = data
+        return
+
+    def patient_no(self):
+        return str(self.data[1].text)
+
+    def sex(self):
+        return 1 if self.data[3].text[0] == '남' else 0
+
+    def nationality(self):
+        import re
+
+        return re.findall('\(([^,]+),', self.data[3].text)[0]
+
+    def age(self):
+        import re
+
+        return re.findall('\'([^,]+)\)', self.data[3].text)[0]
+
+    def causation(self):
+        import re
+
+        return '' if re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0] == '확인 중' else re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
+
+    def order(self):
+        import re
+
+        return -1 if re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0] == '확인 중' else int(
+            re.sub('[^0-9]', '', re.findall(' \(([확인 중0-9차]+)\)', self.data[5].text)[0]))
+
+    def confirmed_month(self):
+        import re
+
+        return int(re.findall('([0-9]+).', self.data[7].text)[0])
+
+    def confirmed_date(self):
+        import re
+
+        return int(re.findall('[0-9].[^[0-9]+([0-9]+)', self.data[7].text)[0])
+
+    def clinic(self):
+        import re
+
+        return '' if self.data[9].text == '확인 중' else self.data[9].text
+
+    def contacted(self):
+        import re
+
+        return -1 if re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[
+                               0] == '확인 중' else int(
+            re.findall('([확인 중0-9]+) [^확인중0-9]+\(', self.data[11].text)[0])
+
+    def isolated_contacted(self):
+        import re
+
+        return -1 if re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0] == '확인 중' else int(re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0])
+
+
 def get_patient_data(page_index=0, patient_id=0):
     logger.info("get_patient_data: function started | page_index=" + str(page_index) + " | patient_id=" + str(patient_id))
     import re
@@ -32,24 +92,20 @@ def get_patient_data(page_index=0, patient_id=0):
     patient_info_extracted = beautifulsoup_patient_info.findAll('span')
     logger.info("get_patient_data: patient_info_extracted picked out")
 
+    picker = PatientInfoPicker(patient_info_extracted)
+
     patient_info = {
-        'patient_no': str(patient_info_extracted[1].text),
-        'sex': 1 if patient_info_extracted[3].text[0] == '남' else 0,
-        'nationality': re.findall('\(([^,]+),', patient_info_extracted[3].text)[0],
-        'age': re.findall('\'([^,]+)\)', patient_info_extracted[3].text)[0],
-        'causation': '' if re.findall('([^|]+) \([확인0-9차]{2}', patient_info_extracted[5].text)[0] == '확인 중' else
-        re.findall('([^|]+) \([확인0-9차]{2}', patient_info_extracted[5].text)[0],
-        'order': -1 if re.findall(' \(([확인 중0-9차]+)\)', patient_info_extracted[5].text)[0] == '확인 중' else int(
-            re.sub('[^0-9]', '', re.findall(' \(([확인 중0-9차]+)\)', patient_info_extracted[5].text)[0])),
-        'confirmed_month': int(re.findall('([0-9]+).', patient_info_extracted[7].text)[0]),
-        'confirmed_date': int(re.findall('[0-9].[^[0-9]+([0-9]+)', patient_info_extracted[7].text)[0]),
-        'clinic': '' if patient_info_extracted[9].text == '확인 중' else patient_info_extracted[9].text,
-        'contacted': -1 if re.findall('([확인 중0-9]+) [^확인중0-9]+\(', patient_info_extracted[11].text)[
-                               0] == '확인 중' else int(
-            re.findall('([확인 중0-9]+) [^확인중0-9]+\(', patient_info_extracted[11].text)[0]),
-        'isolated_contacted': -1 if
-        re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', patient_info_extracted[11].text)[0] == '확인 중' else int(
-            re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', patient_info_extracted[11].text)[0])
+        'patient_no': picker.patient_no(),
+        'sex': picker.sex(),
+        'nationality': picker.nationality(),
+        'age': picker.age(),
+        'causation': picker.causation(),
+        'order': picker.order(),
+        'confirmed_month': picker.confirmed_month(),
+        'confirmed_date': picker.confirmed_date(),
+        'clinic': picker.clinic,
+        'contacted': picker.contacted(),
+        'isolated_contacted': picker.isolated_contacted()
     }
     logger.info("get_patient_data: patient_info generated | patient_info=" + str(patient_info))
 
