@@ -5,12 +5,20 @@ import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
+import json
+import time
+
 logger = logging.getLogger(__name__)
 fileHandler = RotatingFileHandler('./log/patient_data_crawler.log', maxBytes=1024 * 1024 * 1024 * 9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
 logger.info("every package loaded and start logging")
+
+
+def dump_result(uid, data):
+    with open("./patient-data/k_covid19_patient_" + str(uid) + ".json", "w") as json_file:
+        json.dump(data, json_file)
 
 
 class PatientInfoPicker:
@@ -297,6 +305,10 @@ def get_every_patient_data():
 
 
 if __name__ == '__main__':
+    timestamp = int(time.time()*1000)
+
     result = get_every_patient_data()
+
+    dump_result(timestamp, result)
 
     print(result)
