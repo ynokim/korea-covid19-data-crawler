@@ -8,12 +8,42 @@ from bs4 import BeautifulSoup
 import json
 import time
 
+import pymysql
+import mysql_property
+
 logger = logging.getLogger(__name__)
 fileHandler = RotatingFileHandler('./log/patient_data_crawler.log', maxBytes=1024 * 1024 * 1024 * 9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
 logger.info("every package loaded and start logging")
+
+
+def insert_result(data):
+    connection = pymysql.connect(host=mysql_property.hostname, user=mysql_property.user,
+                                 password=mysql_property.password, db=mysql_property.database,
+                                 charset=mysql_property.charset)
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute("delete from patient_info;")
+    cursor.execute("delete from patient_etc;")
+    cursor.execute("delete from patient_route;")
+
+    for patient in data['patient_info']:
+        cursor.execute(f"insert into patient_info values({patient['patient_no']}, {patient['sex']}, '{patient['nationality']}', {patient['age']}, '{patient['causation']}', {patient['order']}, {patient['confirmed_month']}, {patient['confirmed_date']}, '{patient['clinic']}', {patient['contacted']}, {patient['isolated_contacted']});")
+
+    for patient in data['patient_path_info_list']:
+        if patient:
+            for content_no, element in zip(range(len(patient)), patient):
+                cursor.execute(f"insert into patient_etc values({element['patient_no']}, {content_no}, '{element['content']}');")
+
+    for patient in data['patient_path_list']:
+        if patient:
+            for route_no, element in zip(range(len(patient)), patient):
+                cursor.execute(f"insert into patient_route values({element['patient_no']}, {route_no}, {element['month']}, {element['date']}, '{element['content']}');")
+
+    connection.commit()
+    connection.close()
 
 
 def dump_result(uid, data):
@@ -310,5 +340,4 @@ if __name__ == '__main__':
     result = get_every_patient_data()
 
     dump_result(timestamp, result)
-
-    print(result)
+    insert_result(result)
