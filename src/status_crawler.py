@@ -8,12 +8,28 @@ from bs4 import BeautifulSoup
 import json
 import time
 
+import pymysql
+import mysql_property
+
 logger = logging.getLogger(__name__)
-fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024*1024*1024*9, backupCount=9)
+fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024 * 1024 * 1024 * 9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
 logger.info("every package loaded and start logging")
+
+
+def insert_result(uid, data):
+    connection = pymysql.connect(host=mysql_property.hostname, user=mysql_property.user,
+                                 password=mysql_property.password, db=mysql_property.database,
+                                 charset=mysql_property.charset)
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute("insert into status values({0}, {1}, {2}, {3});".format(str(uid), str(data['confirmed']),
+                                                                           str(data['unisolated']), str(data['dead'])))
+
+    connection.commit()
+    connection.close()
 
 
 def dump_result(uid, data):
@@ -59,10 +75,9 @@ def get_status_data(target=''):
 
 
 if __name__ == '__main__':
-    timestamp = int(time.time()*1000)
+    timestamp = int(time.time())
 
     result = get_status_data(target="http://ncov.mohw.go.kr/index_main.jsp")
 
     dump_result(timestamp, result)
-
-    print(result)
+    insert_result(timestamp, result)
