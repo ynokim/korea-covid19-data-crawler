@@ -98,7 +98,7 @@ def get_patient_data(page_index=0, patient_id=0):
         'order': picker.order(),
         'confirmed_month': picker.confirmed_month(),
         'confirmed_date': picker.confirmed_date(),
-        'clinic': picker.clinic,
+        'clinic': picker.clinic(),
         'contacted': picker.contacted(),
         'isolated_contacted': picker.isolated_contacted()
     }
