@@ -13,7 +13,7 @@ logger.setLevel(logging.INFO)
 logger.info("every package loaded and start logging")
 
 
-class PatientInfoPicker():
+class PatientInfoPicker:
     def __init__(self, data):
         logger.info("PatientInfoPicker: instance created | data=" + str(data))
         self.data = data
