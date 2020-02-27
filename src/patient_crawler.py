@@ -30,17 +30,20 @@ def insert_result(data):
     cursor.execute("delete from patient_route;")
 
     for patient in data['patient_info']:
-        cursor.execute(f"insert into patient_info values({patient['patient_no']}, {patient['sex']}, '{patient['nationality']}', {patient['age']}, '{patient['causation']}', {patient['order']}, {patient['confirmed_month']}, {patient['confirmed_date']}, '{patient['clinic']}', {patient['contacted']}, {patient['isolated_contacted']});")
+        cursor.execute(
+            f"insert into patient_info values({patient['patient_no']}, {patient['sex']}, '{patient['nationality']}', {patient['age']}, '{patient['causation']}', {patient['order']}, {patient['confirmed_month']}, {patient['confirmed_date']}, '{patient['clinic']}', {patient['contacted']}, {patient['isolated_contacted']});")
 
     for patient in data['patient_path_info_list']:
         if patient:
             for content_no, element in zip(range(len(patient)), patient):
-                cursor.execute(f"insert into patient_etc values({element['patient_no']}, {content_no}, '{element['content']}');")
+                cursor.execute(
+                    f"insert into patient_etc values({element['patient_no']}, {content_no}, '{element['content']}');")
 
     for patient in data['patient_path_list']:
         if patient:
             for route_no, element in zip(range(len(patient)), patient):
-                cursor.execute(f"insert into patient_route values({element['patient_no']}, {route_no}, {element['month']}, {element['date']}, '{element['content']}');")
+                cursor.execute(
+                    f"insert into patient_route values({element['patient_no']}, {route_no}, {element['month']}, {element['date']}, '{element['content']}');")
 
     connection.commit()
     connection.close()
@@ -75,7 +78,7 @@ class PatientInfoPicker:
     def causation(self):
         logger.info("PatientInfoPicker: causation function called")
         return '' if re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0] == '확인 중' else \
-        re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
+            re.findall('([^|]+) \([확인0-9차]{2}', self.data[5].text)[0]
 
     def order(self):
         logger.info("PatientInfoPicker: order function called")
@@ -106,17 +109,24 @@ class PatientInfoPicker:
             re.findall('\([^확인중0-9]+([확인 중0-9]+)[^확인중0-9]+\)', self.data[11].text)[0])
 
 
-def get_patient_data(page_index=0, patient_id=0):
+def get_patient_data(pages, page_index=0, patient_id=0):
     logger.info(
         "get_patient_data: function started | page_index=" + str(page_index) + " | patient_id=" + str(patient_id))
 
-    target = 'http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=' + str(page_index)
-    logger.info("get_patient_data: target declared | target=" + target)
+    if pages[page_index - 1] is None:
+        target = 'http://ncov.mohw.go.kr/bdBoardList_Real.do?brdGubun=12&pageIndex=' + str(page_index)
+        logger.info("get_patient_data: target declared | target=" + target)
 
-    downloaded_html = urlopen(target)
-    logger.info("get_patient_data: html downloaded")
-    beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
-    logger.info("get_patient_data: html parsed to beautifulsoup object")
+        downloaded_html = urlopen(target)
+        logger.info("get_patient_data: html downloaded")
+        beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
+        logger.info("get_patient_data: html parsed to beautifulsoup object")
+
+        pages[page_index - 1] = beautifulsoup_object
+        logger.info("get_patient_data: loaded page saved")
+    else:
+        beautifulsoup_object = pages[page_index - 1]
+        logger.info("get_patient_data: saved page loaded")
 
     patient_info_raw = beautifulsoup_object.findAll('a', href='#no' + str(patient_id))
     logger.info("get_patient_data: patient_info_raw picked out")
@@ -254,7 +264,7 @@ def get_patient_data(page_index=0, patient_id=0):
     logger.info(
         "get_patient_data: function ended | patient_info=" + str(patient_info) + " | patient_path_info_list=" + str(
             patient_path_info_list) + " | patient_path_list=" + str(patient_path_list))
-    return patient_info, patient_path_info_list, patient_path_list
+    return pages, patient_info, patient_path_info_list, patient_path_list
 
 
 def get_patient_num():
@@ -297,10 +307,12 @@ def get_every_patient_data():
     page_index = 1
     logger.info("get_every_patient_data: initialize page_index | page_index=" + str(page_index))
 
+    pages = [None] * (int(patient_num / patient_left_in_page) + 1)
     while patient_id != 0:
         logger.info("get_every_patient_data: processing patient_id " + str(patient_id))
-        patient_info, patient_path_info_list, patient_path_list = get_patient_data(page_index=page_index,
-                                                                                   patient_id=patient_id)
+        pages, patient_info, patient_path_info_list, patient_path_list = get_patient_data(pages=pages,
+                                                                                          page_index=page_index,
+                                                                                          patient_id=patient_id)
         logger.info("get_every_patient_data: get data from get_patient_data function | patient_info=" + str(
             patient_info) + " | patient_path_info_list=" + str(patient_path_info_list) + " | patient_path_list=" + str(
             patient_path_list))
@@ -335,7 +347,7 @@ def get_every_patient_data():
 
 
 if __name__ == '__main__':
-    timestamp = int(time.time()*1000)
+    timestamp = int(time.time() * 1000)
 
     result = get_every_patient_data()
 
