@@ -5,12 +5,20 @@ import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
+import json
+import time
+
 logger = logging.getLogger(__name__)
 fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024*1024*1024*9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
 logger.info("every package loaded and start logging")
+
+
+def dump_result(uid, data):
+    with open("./status-data/k_covid19_status_" + str(uid) + ".json", "w") as json_file:
+        json.dump(data, json_file)
 
 
 def get_status(target=''):
@@ -51,6 +59,10 @@ def get_status(target=''):
 
 
 if __name__ == '__main__':
+    timestamp = int(time.time()*1000)
+
     result = get_status(target="http://ncov.mohw.go.kr/index_main.jsp")
+
+    dump_result(timestamp, result)
 
     print(result)
