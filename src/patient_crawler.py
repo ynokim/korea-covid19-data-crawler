@@ -341,7 +341,7 @@ def get_every_patient_data():
 
 
 if __name__ == '__main__':
-    timestamp = int(time.time() * 1000)
+    timestamp = int(time.time())
 
     result = get_every_patient_data()
 
