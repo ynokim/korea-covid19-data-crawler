@@ -82,8 +82,12 @@ def get_status_data(target=''):
 
 if __name__ == '__main__':
     timestamp = int(time.time())
+    logger.info("recorded a time stamp | timestamp=" + str(timestamp))
 
     result = get_status_data(target="http://ncov.mohw.go.kr/index_main.jsp")
+    logger.info("get result | result=" + str(result))
 
     dump_result(timestamp, result)
+    logger.info("dump result | timestamp=" + str(timestamp) + " | result=" + str(result))
     insert_result(timestamp, result)
+    logger.info("insert result | timestamp=" + str(timestamp) + " | result=" + str(result))
