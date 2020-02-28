@@ -20,16 +20,22 @@ logger.info("every package loaded and start logging")
 
 
 def insert_result(uid, data):
+    logger.info("insert_result: function started")
     connection = pymysql.connect(host=mysql_property.hostname, user=mysql_property.user,
                                  password=mysql_property.password, db=mysql_property.database,
                                  charset=mysql_property.charset)
     cursor = connection.cursor(pymysql.cursors.DictCursor)
+    logger.info("insert_result: database connection opened")
 
     cursor.execute("insert into status values({0}, {1}, {2}, {3});".format(str(uid), str(data['confirmed']),
                                                                            str(data['unisolated']), str(data['dead'])))
+    logger.info("insert_result: status data inserted")
 
     connection.commit()
     connection.close()
+    logger.info("insert_result: database connection closed")
+
+    logger.info("insert_result: function ended")
 
 
 def dump_result(uid, data):
