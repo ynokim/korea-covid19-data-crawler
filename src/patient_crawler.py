@@ -26,18 +26,11 @@ def insert_result(data):
     cursor = connection.cursor(pymysql.cursors.DictCursor)
 
     cursor.execute("delete from patient_info;")
-    cursor.execute("delete from patient_etc;")
     cursor.execute("delete from patient_route;")
 
     for patient in data['patient_info']:
         cursor.execute(
             f"insert into patient_info values({patient['patient_no']}, {patient['sex']}, '{patient['nationality']}', {patient['age']}, '{patient['causation']}', {patient['order']}, {patient['confirmed_month']}, {patient['confirmed_date']}, '{patient['clinic']}', {patient['contacted']}, {patient['isolated_contacted']});")
-
-    for patient in data['patient_path_info_list']:
-        if patient:
-            for content_no, element in zip(range(len(patient)), patient):
-                cursor.execute(
-                    f"insert into patient_etc values({element['patient_no']}, {content_no}, '{element['content']}');")
 
     for patient in data['patient_path_list']:
         if patient:
@@ -159,8 +152,6 @@ def get_patient_data(pages, page_index=0, patient_id=0):
     patient_path_extracted = beautifulsoup_patient_path.findAll('li')
     logger.info("get_patient_data: patient_path_extracted picked out")
 
-    patient_path_info_list = []
-    logger.info("get_patient_data: patient_path_info_list declared")
     patient_path_list = []
     logger.info("get_patient_data: patient_path_list declared")
 
@@ -174,14 +165,16 @@ def get_patient_data(pages, page_index=0, patient_id=0):
         logger.info("get_patient_data: patient_path_text extracted | patient_path_text=" + patient_path_text)
 
         if patient_path_text[0] != '(':
-            logger.info("get_patient_data: data confirmed as patient_path_info")
-            patient_path_info = {
+            logger.info("get_patient_data: data confirmed as patient_path")
+            patient_path = {
                 'patient_no': patient_id,
+                'month': 0,
+                'date': 0,
                 'content': patient_path_text
             }
-            logger.info("get_patient_data: patient_path_info generated | patient_path_info=" + str(patient_path_info))
-            patient_path_info_list.append(patient_path_info)
-            logger.info("get_patient_data: patient_path_info appended to patient_path_info_list")
+            logger.info("get_patient_data: patient_path generated | patient_path=" + str(patient_path))
+            patient_path_list.append(patient_path)
+            logger.info("get_patient_data: patient_path appended to patient_path_list")
         else:
             logger.info("get_patient_data: data confirmed as patient_path")
             month_period_identifier = re.findall('[~∼][0-9]+([월])', patient_path_text)
@@ -262,9 +255,8 @@ def get_patient_data(pages, page_index=0, patient_id=0):
                 logger.info("get_patient_data: patient_path appended to patient_path_list")
 
     logger.info(
-        "get_patient_data: function ended | patient_info=" + str(patient_info) + " | patient_path_info_list=" + str(
-            patient_path_info_list) + " | patient_path_list=" + str(patient_path_list))
-    return pages, patient_info, patient_path_info_list, patient_path_list
+        "get_patient_data: function ended | patient_info=" + str(patient_info) + " | patient_path_list=" + str(patient_path_list))
+    return pages, patient_info, patient_path_list
 
 
 def get_patient_num():
@@ -294,8 +286,6 @@ def get_every_patient_data():
 
     patient_info_collected = []
     logger.info("get_every_patient_data: patient_info_collected declared")
-    patient_path_info_list_collected = []
-    logger.info("get_every_patient_data: patient_path_info_list_collected declared")
     patient_path_list_collected = []
     logger.info("get_every_patient_data: patient_path_list_collected declared")
 
@@ -310,16 +300,12 @@ def get_every_patient_data():
     pages = [None] * (int(patient_num / patient_left_in_page) + 1)
     while patient_id != 0:
         logger.info("get_every_patient_data: processing patient_id " + str(patient_id))
-        pages, patient_info, patient_path_info_list, patient_path_list = get_patient_data(pages=pages,
-                                                                                          page_index=page_index,
-                                                                                          patient_id=patient_id)
+        pages, patient_info, patient_path_list = get_patient_data(pages=pages, page_index=page_index, patient_id=patient_id)
         logger.info("get_every_patient_data: get data from get_patient_data function | patient_info=" + str(
-            patient_info) + " | patient_path_info_list=" + str(patient_path_info_list) + " | patient_path_list=" + str(
+            patient_info) + " | patient_path_info_list=" + " | patient_path_list=" + str(
             patient_path_list))
         patient_info_collected.insert(0, patient_info)
         logger.info("get_patient_data: patient_info inserted to patient_info_collected")
-        patient_path_info_list_collected.insert(0, patient_path_info_list)
-        logger.info("get_patient_data: patient_path_info_list inserted to patient_path_info_list_collected")
         patient_path_list_collected.insert(0, patient_path_list)
         logger.info("get_patient_data: patient_path_list inserted to patient_path_list_collected")
         patient_id -= 1
@@ -337,7 +323,6 @@ def get_every_patient_data():
 
     collected_result = {
         'patient_info': patient_info_collected,
-        'patient_path_info_list': patient_path_info_list_collected,
         'patient_path_list': patient_path_list_collected
     }
     logger.info("get_patient_data: collected_result generated | collected_result=" + str(collected_result))
