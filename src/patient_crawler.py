@@ -342,8 +342,12 @@ def get_every_patient_data():
 
 if __name__ == '__main__':
     timestamp = int(time.time())
+    logger.info("recorded a time stamp | timestamp=" + str(timestamp))
 
     result = get_every_patient_data()
+    logger.info("get result | result=" + str(result))
 
     dump_result(timestamp, result)
+    logger.info("dump result | timestamp=" + str(timestamp) + " | result=" + str(result))
     insert_result(result)
+    logger.info("insert result | result=" + str(result))
