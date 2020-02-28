@@ -20,26 +20,35 @@ logger.info("every package loaded and start logging")
 
 
 def insert_result(data):
+    logger.info("insert_result: function started")
     connection = pymysql.connect(host=mysql_property.hostname, user=mysql_property.user,
                                  password=mysql_property.password, db=mysql_property.database,
                                  charset=mysql_property.charset)
     cursor = connection.cursor(pymysql.cursors.DictCursor)
+    logger.info("insert_result: database connection opened")
 
     cursor.execute("delete from patient_info;")
+    logger.info("insert_result: patient_info data cleared")
     cursor.execute("delete from patient_route;")
+    logger.info("insert_result: patient_route data cleared")
 
     for patient in data['patient_info']:
         cursor.execute(
             f"insert into patient_info values({patient['patient_no']}, {patient['sex']}, '{patient['nationality']}', {patient['age']}, '{patient['causation']}', {patient['order']}, {patient['confirmed_month']}, {patient['confirmed_date']}, '{patient['clinic']}', {patient['contacted']}, {patient['isolated_contacted']});")
+    logger.info("insert_result: patient_info data inserted")
 
     for patient in data['patient_path_list']:
         if patient:
             for route_no, element in zip(range(len(patient)), patient):
                 cursor.execute(
                     f"insert into patient_route values({element['patient_no']}, {route_no}, {element['month']}, {element['date']}, '{element['content']}');")
+    logger.info("insert_result: patient_route data inserted")
 
     connection.commit()
     connection.close()
+    logger.info("insert_result: database connection closed")
+
+    logger.info("insert_result: function ended")
 
 
 def dump_result(uid, data):
