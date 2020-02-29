@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler
 import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import datetime
 
 import json
 import time
@@ -20,7 +21,7 @@ logger.setLevel(logging.INFO)
 logger.info("every package loaded and start logging")
 
 
-def insert_result(uid, data):
+def insert_result(uid, data_list):
     logger.info("insert_result: function started")
     connection = pymysql.connect(host=mysql_status_property.hostname, user=mysql_status_property.user,
                                  password=mysql_status_property.password, db=mysql_status_property.database,
@@ -28,9 +29,9 @@ def insert_result(uid, data):
     cursor = connection.cursor(pymysql.cursors.DictCursor)
     logger.info("insert_result: database connection opened")
 
-    cursor.execute("insert into status values({0}, {1}, {2}, {3});".format(str(uid), str(data['confirmed']),
-                                                                           str(data['unisolated']), str(data['dead'])))
-    logger.info("insert_result: status data inserted")
+    for data in data_list[1:]:
+        cursor.execute(f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified_sum']}, {data['certified_isolated']}, {data['certified_unisolated']}, {data['certified_dead']}, {data['check_sum']}, {data['check_progressing']}, {data['check_negative']}, {data['sum']});")
+        logger.info("insert_result: status data inserted")
 
     connection.commit()
     connection.close()
@@ -52,40 +53,68 @@ def get_status_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_status_data: html parsed to beautifulsoup object")
 
-    numbers_raw = beautifulsoup_object.findAll('a', class_='num')
+    announced_time = re.findall('[^ ]+', re.sub('[^0-9 ]', '', beautifulsoup_object.findAll('p', class_='info')[0].text))
+
+    datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
+    announced_time_unix = int(time.mktime(datetime_object.timetuple()))
+
+    raw_table = beautifulsoup_object.findAll('tbody')
     logger.info("get_status_data: numbers_raw picked out")
+    raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[0]), "html.parser")
 
-    confirmed_num_str = numbers_raw[0].text
-    logger.info("get_status_data: confirmed_num_str extracted | dead_num_int=" + str(confirmed_num_str))
-    confirmed_num_int = int(re.sub(',', '', confirmed_num_str[0:len(confirmed_num_str) - 2]))
-    logger.info("get_status_data: confirmed_num_int extracted | dead_num_int=" + str(confirmed_num_int))
-
-    unisolated_num_str = numbers_raw[1].text
-    logger.info("get_status_data: unisolated_num_str extracted | dead_num_int=" + str(unisolated_num_str))
-    unisolated_num_int = int(re.sub(',', '', unisolated_num_str[0:len(unisolated_num_str) - 2]))
-    logger.info("get_status_data: unisolated_num_int extracted | dead_num_int=" + str(unisolated_num_int))
-
-    dead_num_str = numbers_raw[2].text
-    logger.info("get_status_data: dead_num_str extracted | dead_num_int=" + str(dead_num_str))
-    dead_num_int = int(re.sub(',', '', dead_num_str[0:len(dead_num_str) - 2]))
-    logger.info("get_status_data: dead_num_int extracted | dead_num_int=" + str(dead_num_int))
-
-    collected_result = {
-        'confirmed': confirmed_num_int,
-        'unisolated': unisolated_num_int,
-        'dead': dead_num_int
+    status_data_list = [announced_time_unix]
+    table_data_rows = raw_table_beautifulsoup_object.findAll('tr')
+    region_dictionary = {
+        '합계': 'synthesize',
+        '서울': 'seoul',
+        '부산': 'busan',
+        '대구': 'daegu',
+        '인천': 'incheon',
+        '광주': 'gwangju',
+        '대전': 'daejeon',
+        '울산': 'ulsan',
+        '세종': 'sejong',
+        '경기': 'gyeonggi',
+        '강원': 'gangwon',
+        '충북': 'chungbuk',
+        '충남': 'chungnam',
+        '전북': 'jeonbuk',
+        '전남': 'jeonnam',
+        '경북': 'gyeongbuk',
+        '경남': 'gyeongnam',
+        '제주': 'jeju',
+        '검역': 'quarantine'
     }
-    logger.info("get_status_data: collected_result generated | collected_result=" + str(collected_result))
 
-    logger.info("get_status_data: function ended | collected_result=" + str(collected_result))
-    return collected_result
+    for table_data in table_data_rows:
+        table_data_beautifulsoup_object = BeautifulSoup(str(table_data), "html.parser")
+
+        region = region_dictionary[table_data_beautifulsoup_object.findAll('th')[0].text]
+        data = table_data_beautifulsoup_object.findAll('td')
+
+        status_data = {
+            'region': region,
+            'increased': int(re.sub('[^0-9]', '', data[0].text)),
+            'certified_sum': int(re.sub('[^0-9]', '', data[1].text)),
+            'certified_isolated': int(re.sub('[^0-9]', '', data[2].text)),
+            'certified_unisolated': int(re.sub('[^0-9]', '', data[3].text)),
+            'certified_dead': int(re.sub('[^0-9]', '', data[4].text)),
+            'check_sum': int(re.sub('[^0-9]', '', data[5].text)),
+            'check_progressing': int(re.sub('[^0-9]', '', data[6].text)),
+            'check_negative': int(re.sub('[^0-9]', '', data[7].text)),
+            'sum': int(re.sub('[^0-9]', '', data[8].text))
+        }
+
+        status_data_list.append(status_data)
+
+    return status_data_list
 
 
 if __name__ == '__main__':
     timestamp = int(time.time())
     logger.info("recorded a time stamp | timestamp=" + str(timestamp))
 
-    result = get_status_data(target="http://ncov.mohw.go.kr/index_main.jsp")
+    result = get_status_data(target="http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=13")
     logger.info("get result | result=" + str(result))
 
     dump_result(timestamp, result)
