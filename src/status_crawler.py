@@ -30,7 +30,8 @@ def insert_result(uid, data_list):
     logger.info("insert_result: database connection opened")
 
     for data in data_list[1:]:
-        cursor.execute(f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified_sum']}, {data['certified_isolated']}, {data['certified_unisolated']}, {data['certified_dead']}, {data['check_sum']}, {data['check_progressing']}, {data['check_negative']}, {data['sum']});")
+        cursor.execute(
+            f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified_sum']}, {data['certified_isolated']}, {data['certified_unisolated']}, {data['certified_dead']}, {data['check_sum']}, {data['check_progressing']}, {data['check_negative']}, {data['sum']});")
         logger.info("insert_result: status data inserted")
 
     connection.commit()
@@ -53,7 +54,8 @@ def get_status_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_status_data: html parsed to beautifulsoup object")
 
-    announced_time = re.findall('[^ ]+', re.sub('[^0-9 ]', '', beautifulsoup_object.findAll('p', class_='info')[0].text))
+    announced_time = re.findall('[^ ]+',
+                                re.sub('[^0-9 ]', '', beautifulsoup_object.findAll('p', class_='info')[0].text))
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
