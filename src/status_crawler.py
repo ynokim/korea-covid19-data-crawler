@@ -9,7 +9,7 @@ import json
 import time
 
 import pymysql
-import mysql_property
+import mysql_status_property
 
 logging.Formatter.converter = time.gmtime
 logger = logging.getLogger(__name__)
@@ -22,9 +22,9 @@ logger.info("every package loaded and start logging")
 
 def insert_result(uid, data):
     logger.info("insert_result: function started")
-    connection = pymysql.connect(host=mysql_property.hostname, user=mysql_property.user,
-                                 password=mysql_property.password, db=mysql_property.database,
-                                 charset=mysql_property.charset)
+    connection = pymysql.connect(host=mysql_status_property.hostname, user=mysql_status_property.user,
+                                 password=mysql_status_property.password, db=mysql_status_property.database,
+                                 charset=mysql_status_property.charset)
     cursor = connection.cursor(pymysql.cursors.DictCursor)
     logger.info("insert_result: database connection opened")
 
