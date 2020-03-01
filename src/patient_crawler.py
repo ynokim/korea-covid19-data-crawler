@@ -13,7 +13,7 @@ import mysql_patient_property
 
 logging.Formatter.converter = time.gmtime
 logger = logging.getLogger(__name__)
-fileHandler = RotatingFileHandler('./log/status_crawler.log', maxBytes=1024 * 1024 * 1024 * 9, backupCount=9)
+fileHandler = RotatingFileHandler('./log/patient_crawler.log', maxBytes=1024 * 1024 * 1024 * 9, backupCount=9)
 fileHandler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)s] >> %(message)s'))
 logger.addHandler(fileHandler)
 logger.setLevel(logging.INFO)
