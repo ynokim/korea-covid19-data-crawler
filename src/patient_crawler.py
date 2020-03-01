@@ -41,7 +41,7 @@ def insert_result(data_list):
 
 
 def dump_result(uid, data):
-    with open("./status-data/k_covid19_status_" + str(uid) + ".json", "w") as json_file:
+    with open("./patient-data/k_covid19_patient_" + str(uid) + ".json", "w") as json_file:
         json.dump(data, json_file)
 
 
