@@ -55,7 +55,9 @@ def get_foreign_data(target=''):
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
     announced_time = re.findall('[^ .]+',
-                                re.sub('[^0-9 .]', '', re.findall('\(([0-9][^)]+)\)', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]))
+                                re.sub('[^0-9 .]', '', re.findall('\(([0-9][^)]+)\)', beautifulsoup_object.findAll('p',
+                                                                                                                   class_='s_descript')[
+                                    1].text)[0]))
     announced_time.insert(0, '2020')
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
@@ -135,7 +137,6 @@ def get_foreign_data(target=''):
         '합계': 'synthesize'
     }
 
-
     table_data_beautifulsoup_object = BeautifulSoup(str(table_data_rows[0]), "html.parser")
 
     country = table_data_beautifulsoup_object.findAll('th')[0].text
@@ -155,7 +156,8 @@ def get_foreign_data(target=''):
         table_data_beautifulsoup_object = BeautifulSoup(str(table_data), "html.parser")
 
         country = table_data_beautifulsoup_object.findAll('td')[0].text
-        certified = re.sub('[,,명]', '', re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
+        certified = re.sub('[,,명]', '',
+                           re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
         dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
 
         foreign_data = {
