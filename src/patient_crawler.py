@@ -31,7 +31,7 @@ def insert_result(data_list):
         cursor.execute(f"delete from path_{region_data_list[1][0]};")
         for data in region_data_list[0][1:]:
             cursor.execute(
-                f"insert into info_{region_data_list[0][0]} values({data['patient_index']}, {data['patient_no']}, '{data['nationality']}', {data['sex']}, {data['age']}, '{data['causation']}', {data['confirmed_month']}, {data['confirmed_date']}, '{data['residence']}', '{data['clinic']}', {data['discharged']});")
+                f"insert into info_{region_data_list[0][0]} values({data['patient_index']}, '{data['nationality']}', {data['sex']}, {data['age']}, '{data['causation']}', {data['confirmed_month']}, {data['confirmed_date']}, '{data['residence']}', '{data['clinic']}', {data['discharged']});")
         for data in region_data_list[1][1:]:
             cursor.execute(
                 f"insert into path_{region_data_list[1][0]} values({data['patient_index']}, {data['path_no']}, {data['month']}, {data['date']}, '{data['content']}');")
@@ -152,8 +152,6 @@ def get_seoul_patient_info(target):
 
         patient_info = {
             'patient_index': int(re.findall('([0-9]+)\(', patient_info_elements[0].text)[0]),
-            'patient_no': -1 if re.findall('\(([^)]+)\)', patient_info_elements[0].text)[0] == '확인중' else int(
-                re.findall('\(#([^)]+)\)', patient_info_elements[0].text)[0]),
             'nationality': re.findall('([^ (]+)인[  ]\(', patient_info_elements[1].text)[0],
             'sex': 1 if re.findall('\(([^,]+),', patient_info_elements[1].text)[0] == '남' else 0,
             'age': int(re.findall('[‵\']([^)]+)\)', patient_info_elements[1].text)[0]),
