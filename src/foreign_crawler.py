@@ -54,11 +54,12 @@ def get_foreign_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
-    announced_time = re.findall('[^ .]+',
-                                re.sub('[^0-9 .]', '', re.findall('\(([0-9][^)]+)\)', beautifulsoup_object.findAll('p',
-                                                                                                                   class_='s_descript')[
-                                    1].text)[0]))
-    announced_time.insert(0, '2020')
+    print(beautifulsoup_object.findAll('p', class_='s_descript')[1].text)
+
+    announced_time = ['2002',
+                      re.findall('([0-9]+)월', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
+                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
+                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
@@ -87,6 +88,7 @@ def get_foreign_data(target=''):
         '러시아': 'russia',
         '스리랑카': 'srilanka',
         '아프가니스탄': 'afghanistan',
+        '인도네시아': 'indonesia',
         '파키스탄': 'pakistan',
         '투르크메니스탄': 'turkmenistan',
         '이란': 'iran',
@@ -105,6 +107,7 @@ def get_foreign_data(target=''):
         '브라질': 'brasil',
         '멕시코': 'mexico',
         '에콰도르': 'ecuador',
+        '도미니카공화국': 'dominican',
         '이탈리아': 'italiana',
         '독일': 'germany',
         '프랑스': 'france',
@@ -130,6 +133,13 @@ def get_foreign_data(target=''):
         '아제르바이잔': 'azerbaijan',
         '아이슬란드': 'island',
         '모나코': 'monaco',
+        '룩셈부르크': 'luxembourg',
+        '아르메니아': 'armenia',
+        '아일랜드': 'ireland',
+        '체코': 'czecho',
+        '포르투갈': 'portugal',
+        '라트비아': 'latvia',
+        '안도라': 'andora',
         '호주': 'australia',
         '뉴질랜드': 'newzealand',
         '나이지리아': 'nigeria',
