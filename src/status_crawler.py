@@ -100,7 +100,7 @@ def get_status_data(target=''):
             'region': region,
             'increased': int('0' + re.sub('[^0-9]', '', data[0].text)),
             'certified': int('0' + re.sub('[^0-9]', '', data[1].text)),
-            'percentage': int('0' + re.sub('[^0-9]', '', data[2].text))
+            'percentage': float('0' + re.sub('[^0-9.]', '', data[2].text))
         }
 
         status_data_list.append(status_data)
