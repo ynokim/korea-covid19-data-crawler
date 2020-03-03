@@ -96,8 +96,6 @@ def get_status_data(target=''):
         region = region_dictionary[table_data_beautifulsoup_object.findAll('th')[0].text]
         data = table_data_beautifulsoup_object.findAll('td')
 
-        print(data)
-
         status_data = {
             'region': region,
             'increased': int('0' + re.sub('[^0-9]', '', data[0].text)),
