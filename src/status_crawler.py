@@ -31,7 +31,7 @@ def insert_result(uid, data_list):
 
     for data in data_list[1:]:
         cursor.execute(
-            f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified']}, {data['percentage']});")
+            f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified']}, {data['dead']}, {data['percentage']});")
         logger.info("insert_result: status_" + str(data['region']) + " data inserted | " + str(data))
 
     connection.commit()
@@ -100,7 +100,8 @@ def get_status_data(target=''):
             'region': region,
             'increased': int('0' + re.sub('[^0-9]', '', data[0].text)),
             'certified': int('0' + re.sub('[^0-9]', '', data[1].text)),
-            'percentage': float('0' + re.sub('[^0-9.]', '', data[2].text))
+            'dead': int('0' + re.sub('[^0-9]', '', data[2].text)),
+            'percentage': float('0' + re.sub('[^0-9.]', '', data[3].text))
         }
 
         status_data_list.append(status_data)
