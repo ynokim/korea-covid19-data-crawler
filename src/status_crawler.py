@@ -31,8 +31,8 @@ def insert_result(uid, data_list):
 
     for data in data_list[1:]:
         cursor.execute(
-            f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified_sum']}, {data['certified_isolated']}, {data['certified_unisolated']}, {data['certified_dead']}, {data['check_sum']}, {data['check_progressing']}, {data['check_negative']}, {data['sum']});")
-        logger.info("insert_result: status data inserted")
+            f"insert into status_{data['region']} values({uid}, {data_list[0]}, {data['increased']}, {data['certified']}, {data['percentage']});")
+        logger.info("insert_result: status_" + str(data['region']) + " data inserted | " + str(data))
 
     connection.commit()
     connection.close()
@@ -54,8 +54,10 @@ def get_status_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_status_data: html parsed to beautifulsoup object")
 
-    announced_time = re.findall('[^ ]+',
-                                re.sub('[^0-9 ]', '', beautifulsoup_object.findAll('p', class_='info')[0].text))
+    announced_time = [re.findall('([0-9]+)년', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
+                      re.findall('([0-9]+)월', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
+                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
+                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='info')[0].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
@@ -94,17 +96,13 @@ def get_status_data(target=''):
         region = region_dictionary[table_data_beautifulsoup_object.findAll('th')[0].text]
         data = table_data_beautifulsoup_object.findAll('td')
 
+        print(data)
+
         status_data = {
             'region': region,
-            'increased': int(re.sub('[^0-9]', '', data[0].text)),
-            'certified_sum': int(re.sub('[^0-9]', '', data[1].text)),
-            'certified_isolated': int(re.sub('[^0-9]', '', data[2].text)),
-            'certified_unisolated': int(re.sub('[^0-9]', '', data[3].text)),
-            'certified_dead': int(re.sub('[^0-9]', '', data[4].text)),
-            'check_sum': int(re.sub('[^0-9]', '', data[5].text)),
-            'check_progressing': int(re.sub('[^0-9]', '', data[6].text)),
-            'check_negative': int(re.sub('[^0-9]', '', data[7].text)),
-            'sum': int(re.sub('[^0-9]', '', data[8].text))
+            'increased': int('0' + re.sub('[^0-9]', '', data[0].text)),
+            'certified': int('0' + re.sub('[^0-9]', '', data[1].text)),
+            'percentage': int('0' + re.sub('[^0-9]', '', data[2].text))
         }
 
         status_data_list.append(status_data)
