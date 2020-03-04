@@ -54,8 +54,6 @@ def get_foreign_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
-    print(beautifulsoup_object.findAll('p', class_='s_descript')[2].text)
-
     announced_time = ['2002',
                       re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
                       re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
