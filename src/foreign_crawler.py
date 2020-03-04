@@ -54,10 +54,12 @@ def get_foreign_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
+    print(beautifulsoup_object.findAll('p', class_='s_descript')[2].text)
+
     announced_time = ['2002',
-                      re.findall('([0-9]+)월', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
-                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
-                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]]
+                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
+                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
+                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
@@ -100,6 +102,10 @@ def get_foreign_data(target=''):
         '이집트': 'egypt',
         '알제리': 'algeria',
         '카타르': 'qatar',
+        '요르단': 'jordan',
+        '튀니지': 'tunisia',
+        '사우디': 'saudi',
+        '모로코': 'morocco',
         '미국': 'usa',
         '캐나다': 'canada',
         '브라질': 'brasil',
@@ -141,6 +147,7 @@ def get_foreign_data(target=''):
         '호주': 'australia',
         '뉴질랜드': 'newzealand',
         '나이지리아': 'nigeria',
+        '세네갈': 'senegal',
         '일본 크루즈': 'japan_cruise',
         '합계': 'synthesize'
     }
