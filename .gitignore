@@ -4,4 +4,5 @@ venv/
 *.log
 status-data/
 patient-data/
+foreign-data/
 __pycache__/
