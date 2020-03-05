@@ -55,9 +55,9 @@ def get_foreign_data(target=''):
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
     announced_time = ['2002',
-                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
-                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
-                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0]]
+                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
+                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
+                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
@@ -110,6 +110,8 @@ def get_foreign_data(target=''):
         '멕시코': 'mexico',
         '에콰도르': 'ecuador',
         '도미니카공화국': 'dominican',
+        '아르헨티나': 'argentina',
+        '칠레': 'chile',
         '이탈리아': 'italiana',
         '독일': 'germany',
         '프랑스': 'france',
@@ -142,6 +144,8 @@ def get_foreign_data(target=''):
         '포르투갈': 'portugal',
         '라트비아': 'latvia',
         '안도라': 'andora',
+        '폴란드': 'poland',
+        '우크라이나': 'ukraine',
         '호주': 'australia',
         '뉴질랜드': 'newzealand',
         '나이지리아': 'nigeria',
