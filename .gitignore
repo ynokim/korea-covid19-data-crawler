@@ -2,7 +2,7 @@
 venv/
 .idea/
 *.log
-status-data/
-patient-data/
-foreign-data/
+src/status-data/
+src/patient-data/
+src/foreign-data/
 __pycache__/
