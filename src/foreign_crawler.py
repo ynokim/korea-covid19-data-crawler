@@ -166,8 +166,8 @@ def get_foreign_data(target=''):
 
     country = table_data_beautifulsoup_object.findAll('th')[0].text
     certified = re.sub('[,,명]', '',
-                       re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[0].text))
-    dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
+                       re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[0].text))
+    dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
 
     foreign_data = {
         'country': country_dictionary[country],
@@ -182,8 +182,8 @@ def get_foreign_data(target=''):
 
         country = table_data_beautifulsoup_object.findAll('td')[0].text
         certified = re.sub('[,,명]', '',
-                           re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
-        dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
+                           re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
+        dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
 
         foreign_data = {
             'country': country_dictionary[country],
@@ -207,3 +207,4 @@ if __name__ == '__main__':
     logger.info("dump result | timestamp=" + str(timestamp) + " | result=" + str(result))
     insert_result(timestamp, result)
     logger.info("insert result | timestamp=" + str(timestamp) + " | result=" + str(result))
+

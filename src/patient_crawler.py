@@ -202,12 +202,12 @@ def get_seoul_patient_path(target):
             if patient_path_text == '확인중':
                 continue
             elif re.findall('[0-9]+월[  ][0-9]+', patient_path_text):
-                month_period_identifier = re.findall('일[ ~∼]+[0-9]+([월])', patient_path_text)
-                date_period_identifier = re.findall('[ ~∼]+[0-9]+([일])', patient_path_text)
+                month_period_identifier = re.findall('일[  ~∼]+[0-9]+([월])', patient_path_text)
+                date_period_identifier = re.findall('[  ~∼]+[0-9]+([일])', patient_path_text)
                 if month_period_identifier == ['월']:
                     start_month = int(re.findall('([0-9]+)월[  ]', patient_path_text)[0])
-                    start_date = int(re.findall('[  ]([0-9]+)일[ ~∼]+', patient_path_text)[0])
-                    end_month = int(re.findall('[ ~∼]+([0-9]+)월[  ]', patient_path_text)[0])
+                    start_date = int(re.findall('[  ]([0-9]+)일[  ~∼]+', patient_path_text)[0])
+                    end_month = int(re.findall('[  ~∼]+([0-9]+)월[  ]', patient_path_text)[0])
                     end_date = int(re.findall('[  ]([0-9]+)일', patient_path_text)[0])
 
                     for month in range(start_month, end_month + 1):
@@ -233,8 +233,8 @@ def get_seoul_patient_path(target):
                                 patient_path_list.append(patient_path)
                 elif date_period_identifier == ['일']:
                     month = int(re.findall('([0-9]+)월[  ]', patient_path_text)[0])
-                    start_date = int(re.findall('[  ]([0-9]+)[ ~∼일]+', patient_path_text)[0])
-                    end_date = int(re.findall('[ ~∼]+([0-9]+)일', patient_path_text)[0])
+                    start_date = int(re.findall('[  ]([0-9]+)[  ~∼일]+', patient_path_text)[0])
+                    end_date = int(re.findall('[  ~∼]+([0-9]+)일', patient_path_text)[0])
                     for date in range(start_date, end_date + 1):
                         patient_path = {
                             'patient_index': patient_no,
@@ -287,7 +287,7 @@ def get_seoul_patient_info(target):
             'patient_index': int(re.findall('([0-9]+)\(', patient_info_elements[0].text)[0]),
             'nationality': re.findall('([^ (]+)인[  ]\(', patient_info_elements[1].text)[0],
             'sex': 1 if re.findall('\(([^,]+),', patient_info_elements[1].text)[0] == '남' else 0,
-            'age': int(re.findall('[  ‵\']([0-9]+)\)', patient_info_elements[1].text)[0]),
+            'age': int(re.findall('[   ‵\']([0-9]+)\)', patient_info_elements[1].text)[0]),
             'causation': patient_info_elements[2].text,
             'confirmed_month': int(re.findall('([0-9]+)/', patient_info_elements[3].text)[0]),
             'confirmed_date': int(re.findall('/([0-9]+)', patient_info_elements[3].text)[0]),
@@ -327,3 +327,4 @@ if __name__ == '__main__':
     logger.info("dump result | timestamp=" + str(timestamp) + " | result=" + str(result))
     insert_result(result)
     logger.info("insert result | result=" + str(result))
+
