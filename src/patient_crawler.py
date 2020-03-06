@@ -137,7 +137,6 @@ def get_busan_patient_path(target):
                     }
                     patient_path_list.append(patient_path)
 
-    print(patient_path_list)
     return patient_path_list
 
 
