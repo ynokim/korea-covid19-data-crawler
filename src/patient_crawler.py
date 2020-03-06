@@ -167,7 +167,7 @@ def get_busan_patient_info(target):
                 re.findall('([0-9]+)/', patient_info_elements[4].text)[0]),
             'confirmed_date': 0 if patient_info_elements[4].text == '-' else int(
                 re.findall('/([0-9]+)', patient_info_elements[4].text)[0]),
-            'residence': re.findall('/[  ]*([^\)]+)\)', patient_info_elements[0].text)[0],
+            'residence': re.findall('/[  ]*([^ /]+)\)', patient_info_elements[0].text)[0],
             'clinic': re.sub('\)', '', re.sub('퇴원\(', '', patient_info_elements[3].text)),
             'discharged': 1 if re.findall('퇴원\(', patient_info_elements[3].text) != [] else 0
         }
