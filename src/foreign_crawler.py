@@ -55,9 +55,9 @@ def get_foreign_data(target=''):
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
     announced_time = ['2002',
-                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
-                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
-                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]]
+                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
+                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
+                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
@@ -151,6 +151,10 @@ def get_foreign_data(target=''):
         '나이지리아': 'nigeria',
         '세네갈': 'senegal',
         '일본 크루즈': 'japan_cruise',
+        '팔레스타인': 'palestine',
+        '지브롤터': 'gibraltar',
+        '세인트마틴': 'saintmartin',
+        '생바르텔레미': 'saintbarthelemy',
         '합계': 'synthesize'
     }
 
