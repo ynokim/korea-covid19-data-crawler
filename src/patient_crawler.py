@@ -70,7 +70,7 @@ def get_busan_patient_path(target):
         for patient_path, path_no in zip(raw_patient_path_list_beautifulsoup_object.findAll('p'),
                                          range(len(raw_patient_path_list_beautifulsoup_object.findAll('p')))):
             if re.findall('<b>([^<]+)</b>', str(patient_path)):
-                patient_path_text = re.sub('<p>', '', re.sub('</p>', '', re.sub('<b>[^<]+</b>', '', str(patient_path))))
+                patient_path_text = re.sub('<p>', '', re.sub('</p>', '', re.sub('<b>([^<]+)</b>', '', str(patient_path)))).strip('​  \n')
                 patient_path_date = re.findall('<b>([^<]+)</b>', str(patient_path))[0]
 
                 if patient_path_text == '확인중':
@@ -196,7 +196,7 @@ def get_seoul_patient_path(target):
 
         for patient_path, path_no in zip(raw_patient_path_beautifulsoup_object.findAll('li'),
                                          range(len(raw_patient_path_beautifulsoup_object.findAll('li')))):
-            patient_path_text = patient_path.text
+            patient_path_text = patient_path.text.strip('​  \n')
 
             if patient_path_text == '확인중':
                 continue
