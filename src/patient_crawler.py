@@ -248,7 +248,7 @@ def get_seoul_patient_path(target):
                         'patient_index': patient_no,
                         'path_no': path_no,
                         'month': int(re.findall('([0-9]+)월[  ]', patient_path_text)[0]),
-                        'date': int(re.findall('[  ]([0-9]+)일', patient_path_text)[0]),
+                        'date': int(re.findall('월[  ]([0-9]+)', patient_path_text)[0]),
                         'content': patient_path_text
                     }
                     patient_path_list.append(patient_path)
@@ -283,7 +283,7 @@ def get_seoul_patient_info(target):
         patient_info_elements = raw_patient_info_beautifulsoup_object.findAll('td')
 
         patient_info = {
-            'patient_index': int(re.findall('([0-9]+)[^0-9]\(', patient_info_elements[0].text)[0]),
+            'patient_index': int(re.findall('([0-9]+)\([^)]+\)', patient_info_elements[0].text)[0]),
             'nationality': re.findall('([^ (]+)인[  ]\(', patient_info_elements[1].text)[0],
             'sex': 1 if re.findall('\(([^,]+),', patient_info_elements[1].text)[0] == '남' else 0,
             'age': int(re.findall('[   ‵\']([0-9]+)\)', patient_info_elements[1].text)[0]),
