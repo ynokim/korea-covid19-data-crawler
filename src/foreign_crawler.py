@@ -55,9 +55,9 @@ def get_foreign_data(target=''):
     logger.info("get_foreign_data: html parsed to beautifulsoup object")
 
     announced_time = ['2002',
-                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
-                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0],
-                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[2].text)[0]]
+                      re.findall('([0-9]+)[^0-9][0-9]+일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
+                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
+                      re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
@@ -88,6 +88,7 @@ def get_foreign_data(target=''):
         '아프가니스탄': 'afghanistan',
         '인도네시아': 'indonesia',
         '부탄': 'bhutan',
+        '몰디브': 'maldives',
         '파키스탄': 'pakistan',
         '투르크메니스탄': 'turkmenistan',
         '이란': 'iran',
@@ -115,6 +116,7 @@ def get_foreign_data(target=''):
         '칠레': 'chile',
         '콜롬비아': 'columbia',
         '페루': 'peru',
+        '코스타리카': 'costarica',
         '이탈리아': 'italiana',
         '독일': 'germany',
         '프랑스': 'france',
@@ -155,6 +157,9 @@ def get_foreign_data(target=''):
         '리히텐슈타인': 'liechtenstein',
         '세르비아': 'serbia',
         '슬로바키아': 'slovakia',
+        '불가리아': 'bulgaria',
+        '몰타': 'malta',
+        '몰도바': 'moldova',
         '호주': 'australia',
         '뉴질랜드': 'newzealand',
         '나이지리아': 'nigeria',
@@ -168,6 +173,9 @@ def get_foreign_data(target=''):
         '세인트마틴': 'saintmartin',
         '생바르텔레미': 'saintbarthelemy',
         '바티칸': 'vatican',
+        '마르티니크': 'martinique',
+        '프랑스령 기아나': 'guyane',
+        '패로제도': 'faroeislands',
         '합계': 'synthesize'
     }
 
