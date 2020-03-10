@@ -54,9 +54,9 @@ def get_status_data(target=''):
     beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
     logger.info("get_status_data: html parsed to beautifulsoup object")
 
-    announced_time = [re.findall('([0-9]+)년', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
-                      re.findall('([0-9]+)월', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
-                      re.findall('([0-9]+)일', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
+    announced_time = ['2002',
+                      re.findall('([0-9]+).', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
+                      re.findall('.([0-9]+)', beautifulsoup_object.findAll('p', class_='info')[0].text)[0],
                       re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='info')[0].text)[0]]
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
