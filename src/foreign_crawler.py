@@ -152,7 +152,7 @@ def get_foreign_data(target=''):
         '폴란드': 'poland',
         '우크라이나': 'ukraine',
         '헝가리': 'hungary',
-        '보스니아헤르체코비나': 'bosnaihercegovina',
+        '보스니아헤르체고비나': 'bosnaihercegovina',
         '슬로베니아': 'slovenija',
         '리히텐슈타인': 'liechtenstein',
         '세르비아': 'serbia',
@@ -167,14 +167,14 @@ def get_foreign_data(target=''):
         '카메룬': 'cameroon',
         '남아프리카공화국': 'republicofsouthafrica',
         '토고': 'republiquetogolaise',
-        '일본 크루즈': 'japan_cruise',
+        '일본크루즈': 'japan_cruise',
         '팔레스타인': 'palestine',
         '지브롤터': 'gibraltar',
         '세인트마틴': 'saintmartin',
         '생바르텔레미': 'saintbarthelemy',
         '바티칸': 'vatican',
         '마르티니크': 'martinique',
-        '프랑스령 기아나': 'guyane',
+        '프랑스령기아나': 'guyane',
         '패로제도': 'faroeislands',
         '합계': 'synthesize'
     }
@@ -187,7 +187,7 @@ def get_foreign_data(target=''):
     dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
 
     foreign_data = {
-        'country': country_dictionary[country],
+        'country': country_dictionary[re.sub('[  ]', '', country)],
         'certified': int(certified),
         'dead': int(re.sub('[,,명]', '', dead[0])) if dead != [] else 0
     }
@@ -203,7 +203,7 @@ def get_foreign_data(target=''):
         dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
 
         foreign_data = {
-            'country': country_dictionary[country],
+            'country': country_dictionary[re.sub('[  ]', '', country)],
             'certified': int(certified),
             'dead': int(re.sub('[,,명]', '', dead[0])) if dead != [] else 0
         }
