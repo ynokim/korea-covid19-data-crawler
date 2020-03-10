@@ -64,7 +64,7 @@ def get_foreign_data(target=''):
 
     raw_table = beautifulsoup_object.findAll('tbody')
     logger.info("get_foreign_data: numbers_raw picked out")
-    raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[1]), "html.parser")
+    raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[2]), "html.parser")
 
     foreign_data_list = [announced_time_unix]
     table_data_rows = raw_table_beautifulsoup_object.findAll('tr')
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     timestamp = int(time.time())
     logger.info("recorded a time stamp | timestamp=" + str(timestamp))
 
-    result = get_foreign_data(target="http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=11")
+    result = get_foreign_data(target="http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=14")
     logger.info("get result | result=" + str(result))
 
     dump_result(timestamp, result)
