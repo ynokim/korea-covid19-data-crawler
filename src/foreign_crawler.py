@@ -64,7 +64,7 @@ def get_foreign_data(target=''):
 
     raw_table = beautifulsoup_object.findAll('tbody')
     logger.info("get_foreign_data: numbers_raw picked out")
-    raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[2]), "html.parser")
+    raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[3]), "html.parser")
 
     foreign_data_list = [announced_time_unix]
     table_data_rows = raw_table_beautifulsoup_object.findAll('tr')
