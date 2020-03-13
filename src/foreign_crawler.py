@@ -124,6 +124,7 @@ def get_foreign_data(target=''):
         '파나마': 'panama',
         '볼리비아': 'bolivia',
         '자메이카': 'jamaica',
+        '온두라스': 'honduras',
         '이탈리아': 'italiana',
         '독일': 'germany',
         '프랑스': 'france',
@@ -169,6 +170,7 @@ def get_foreign_data(target=''):
         '몰도바': 'moldova',
         '알바니아': 'albania',
         '사이프러스': 'cyprus',
+        '터키': 'turkey',
         '호주': 'australia',
         '뉴질랜드': 'newzealand',
         '나이지리아': 'nigeria',
@@ -178,6 +180,7 @@ def get_foreign_data(target=''):
         '토고': 'republiquetogolaise',
         '부르키나파소': 'burkinafaso',
         'DR콩고': 'congo',
+        '코트디부아르': 'ivorycoast',
         '일본크루즈': 'japan_cruise',
         '팔레스타인': 'palestine',
         '지브롤터': 'gibraltar',
@@ -188,6 +191,7 @@ def get_foreign_data(target=''):
         '프랑스령기아나': 'guyane',
         '패로제도': 'faroeislands',
         '건지': 'guernsey',
+        '프랑스령폴리네시아': 'polynesia',
         '합계': 'synthesize'
     }
 
