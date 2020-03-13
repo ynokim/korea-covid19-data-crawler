@@ -202,6 +202,8 @@ def get_foreign_data(target=''):
                        re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[0].text))
     dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
 
+    # print(country_dictionary[re.sub('[  ]', '', country)], re.sub('[  ]', '', country))
+
     foreign_data = {
         'country': country_dictionary[re.sub('[  ]', '', country)],
         'certified': int(certified),
@@ -217,6 +219,8 @@ def get_foreign_data(target=''):
         certified = re.sub('[,,명]', '',
                            re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
         dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
+
+        # print(country_dictionary[re.sub('[  ]', '', country)], re.sub('[  ]', '', country))
 
         foreign_data = {
             'country': country_dictionary[re.sub('[  ]', '', country)],
