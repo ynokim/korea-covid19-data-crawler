@@ -157,11 +157,18 @@ def get_busan_patient_info(target):
 
         patient_info_elements = raw_patient_info_beautifulsoup_object.findAll('li')
 
+        birth_year = int(re.findall('\([0-9][0-9]([0-9][0-9])년생/', patient_info_elements[0].text)[0])
+
+        if birth_year < 20:
+            age = 2020 - (birth_year + 2000)
+        else:
+            age = 2020 - (birth_year + 1900)
+
         patient_info = {
             'patient_index': int(re.findall('부산-([0-9]+)[  ]', patient_info_elements[0].text)[0]),
             'nationality': '한국',
             'sex': 1 if re.findall('년생/[  ]*([^/]+)/', patient_info_elements[0].text)[0] == '남' else 0,
-            'age': int(re.findall('\([0-9][0-9]([0-9][0-9])년생/', patient_info_elements[0].text)[0]),
+            'age': age,
             'causation': patient_info_elements[1].text,
             'confirmed_month': 0 if patient_info_elements[4].text == '-' else int(
                 re.findall('([0-9]+)/', patient_info_elements[4].text)[0]),
@@ -282,11 +289,18 @@ def get_seoul_patient_info(target):
 
         patient_info_elements = raw_patient_info_beautifulsoup_object.findAll('td')
 
+        birth_year = int(re.findall('[   ‵\']([0-9]+)\)', patient_info_elements[1].text)[0])
+
+        if birth_year < 20:
+            age = 2020 - (birth_year + 2000)
+        else:
+            age = 2020 - (birth_year + 1900)
+
         patient_info = {
             'patient_index': int(re.findall('([0-9]+)\([^)]+\)', patient_info_elements[0].text)[0]),
             'nationality': re.findall('([^ (]+)인[  ]\(', patient_info_elements[1].text)[0],
             'sex': 1 if re.findall('\(([^,]+),', patient_info_elements[1].text)[0] == '남' else 0,
-            'age': int(re.findall('[   ‵\']([0-9]+)\)', patient_info_elements[1].text)[0]),
+            'age': age,
             'causation': patient_info_elements[2].text,
             'confirmed_month': int(re.findall('([0-9]+)/', patient_info_elements[3].text)[0]),
             'confirmed_date': int(re.findall('/([0-9]+)', patient_info_elements[3].text)[0]),
