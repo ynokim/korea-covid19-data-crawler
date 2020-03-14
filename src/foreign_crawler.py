@@ -125,6 +125,9 @@ def get_foreign_data(target=''):
         '볼리비아': 'bolivia',
         '자메이카': 'jamaica',
         '온두라스': 'honduras',
+        '세인트빈센트그레나딘': 'stvincentandthegrenadines',
+        '쿠바': 'cuba',
+        '가이아나': 'guyana',
         '이탈리아': 'italiana',
         '독일': 'germany',
         '프랑스': 'france',
@@ -181,6 +184,7 @@ def get_foreign_data(target=''):
         '부르키나파소': 'burkinafaso',
         'DR콩고': 'congo',
         '코트디부아르': 'ivorycoast',
+        '수단': 'sudan',
         '일본크루즈': 'japan_cruise',
         '팔레스타인': 'palestine',
         '지브롤터': 'gibraltar',
@@ -192,6 +196,8 @@ def get_foreign_data(target=''):
         '패로제도': 'faroeislands',
         '건지': 'guernsey',
         '프랑스령폴리네시아': 'polynesia',
+        '저지섬': 'jersey',
+        '프랑스령레위니옹': 'regionreunion',
         '합계': 'synthesize'
     }
 
