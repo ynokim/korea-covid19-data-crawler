@@ -26,15 +26,17 @@ def insert_result(uid, data_list):
     connection = pymysql.connect(host=mysql_foreign_property.hostname, user=mysql_foreign_property.user,
                                  password=mysql_foreign_property.password, db=mysql_foreign_property.database,
                                  charset=mysql_foreign_property.charset)
-    cursor = connection.cursor(pymysql.cursors.DictCursor)
     logger.info("insert_result: database connection opened")
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+    logger.info("insert_result: database cursor created")
 
     for data in data_list[1:]:
         cursor.execute(
             f"insert into foreign_{data['country']} values({uid}, {data_list[0]}, {data['certified']}, {data['dead']});")
-        logger.info("insert_result: status data inserted")
+        logger.info("insert_result: foreign_" + str(data['country']) + " data inserted | uid=" + str(uid) + " | data_list[0]" + str(data_list[0]) + " | data=" + str(data))
 
     connection.commit()
+    logger.info("insert_result: database connection commited")
     connection.close()
     logger.info("insert_result: database connection closed")
 
@@ -42,8 +44,13 @@ def insert_result(uid, data_list):
 
 
 def dump_result(uid, data):
+    logger.info("dump_result: function started")
+
     with open("./foreign-data/k_covid19_foreign_" + str(uid) + ".json", "w") as json_file:
         json.dump(data, json_file)
+    logger.info("dump_result: data dumped as " + "foreign-data/k_covid19_foreign_" + str(uid) + ".json | data=" + str(data))
+
+    logger.info("dump_result: function ended")
 
 
 def get_foreign_data(target=''):
@@ -58,17 +65,24 @@ def get_foreign_data(target=''):
                       re.findall('([0-9]+)[.]', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
                       re.findall('[.]([0-9]+)', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0],
                       re.findall('([0-9]+)시', beautifulsoup_object.findAll('p', class_='s_descript')[1].text)[0]]
+    logger.info("get_foreign_data: get announced time | announced_time=" + str(announced_time))
 
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
+    logger.info("get_foreign_data: convert announced time to datetime object | datetime_object=" + str(datetime_object))
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
+    logger.info("get_foreign_data: convert datetime object to unix time | announced_time_unix=" + str(announced_time_unix))
 
     raw_table = beautifulsoup_object.findAll('tbody')
-    logger.info("get_foreign_data: numbers_raw picked out")
+    logger.info("get_foreign_data: table picked out | raw_table=" + str(raw_table))
     raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[0]), "html.parser")
+    logger.info("get_foreign_data: convert raw table to beautifulsoup object | raw_table_beautifulsoup_object=" + str(raw_table_beautifulsoup_object))
+    table_data_rows = raw_table_beautifulsoup_object.findAll('tr')
+    logger.info("get_foreign_data: export table data from raw_table_beautifulsoup_object | table_data_rows=" + str(table_data_rows))
+    table_data_rows.reverse()
+    logger.info("get_foreign_data: reverse exported data | table_data_rows=" + str(table_data_rows))
 
     foreign_data_list = [announced_time_unix]
-    table_data_rows = raw_table_beautifulsoup_object.findAll('tr')
-    table_data_rows.reverse()
+    logger.info("get_foreign_data: declare foreign_data_list | foreign_data_list=" + str(foreign_data_list))
     country_dictionary = {
         '중국': 'china',
         '홍콩': 'hongkong',
@@ -200,13 +214,18 @@ def get_foreign_data(target=''):
         '프랑스령레위니옹': 'regionreunion',
         '합계': 'synthesize'
     }
+    logger.info("get_foreign_data: declare country_dictionary | country_dictionary=" + str(country_dictionary))
 
     table_data_beautifulsoup_object = BeautifulSoup(str(table_data_rows[0]), "html.parser")
+    logger.info("get_foreign_data: convert table_data to beautifulsoup object | table_data_beautifulsoup_object=" + str(table_data_beautifulsoup_object))
 
     country = table_data_beautifulsoup_object.findAll('th')[0].text
+    logger.info("get_foreign_data: extracting country from table data | country=" + str(country))
     certified = re.sub('[,,명]', '',
                        re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[0].text))
+    logger.info("get_foreign_data: extracting certified from table data | certified=" + str(certified))
     dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
+    logger.info("get_foreign_data: extracting dead from table data | country=" + str(dead))
 
     # print(country_dictionary[re.sub('[  ]', '', country)], re.sub('[  ]', '', country))
 
@@ -215,16 +234,22 @@ def get_foreign_data(target=''):
         'certified': int(certified),
         'dead': int(re.sub('[,,명]', '', dead[0])) if dead != [] else 0
     }
+    logger.info("get_foreign_data: declare foreign data | foreign_data=" + str(foreign_data))
 
     foreign_data_list.append(foreign_data)
+    logger.info("get_foreign_data: put foreign data into foreign data list | foreign_data_list=" + str(foreign_data_list))
 
     for table_data in table_data_rows[1:]:
         table_data_beautifulsoup_object = BeautifulSoup(str(table_data), "html.parser")
+        logger.info("get_foreign_data: convert table_data to beautifulsoup object | table_data_beautifulsoup_object=" + str(table_data_beautifulsoup_object))
 
         country = table_data_beautifulsoup_object.findAll('td')[0].text
+        logger.info("get_foreign_data: extracting country from table data | country=" + str(country))
         certified = re.sub('[,,명]', '',
                            re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
+        logger.info("get_foreign_data: extracting certified from table data | certified=" + str(certified))
         dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
+        logger.info("get_foreign_data: extracting dead from table data | country=" + str(dead))
 
         # print(country_dictionary[re.sub('[  ]', '', country)], re.sub('[  ]', '', country))
 
@@ -233,13 +258,18 @@ def get_foreign_data(target=''):
             'certified': int(certified),
             'dead': int(re.sub('[,,명]', '', dead[0])) if dead != [] else 0
         }
+        logger.info("get_foreign_data: declare foreign data | foreign_data=" + str(foreign_data))
 
         foreign_data_list.append(foreign_data)
+        logger.info("get_foreign_data: put foreign data into foreign data list | foreign_data_list=" + str(foreign_data_list))
 
+    logger.info("get_foreign_data: function ended | foreign_data_list=" + str(foreign_data_list))
     return foreign_data_list
 
 
 if __name__ == '__main__':
+    logger.info("start foreign_crawler.py")
+
     timestamp = int(time.time())
     logger.info("recorded a time stamp | timestamp=" + str(timestamp))
 
@@ -250,4 +280,6 @@ if __name__ == '__main__':
     logger.info("dump result | timestamp=" + str(timestamp) + " | result=" + str(result))
     insert_result(timestamp, result)
     logger.info("insert result | timestamp=" + str(timestamp) + " | result=" + str(result))
+
+    logger.info("end foreign_crawler.py")
 
