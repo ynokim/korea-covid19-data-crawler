@@ -48,7 +48,8 @@ def dump_result(uid, data):
 
     with open("./status-data/k_covid19_status_" + str(uid) + ".json", "w") as json_file:
         json.dump(data, json_file)
-    logger.info("dump_result: data dumped as " + "status-data/k_covid19_status_" + str(uid) + ".json | data=" + str(data))
+    logger.info(
+        "dump_result: data dumped as " + "status-data/k_covid19_status_" + str(uid) + ".json | data=" + str(data))
 
     logger.info("dump_result: function ended")
 
@@ -70,14 +71,17 @@ def get_status_data(target=''):
     datetime_object = datetime.datetime.strptime(str(announced_time), "['%Y', '%m', '%d', '%H']")
     logger.info("get_status_data: convert announced time to datetime object | datetime_object=" + str(datetime_object))
     announced_time_unix = int(time.mktime(datetime_object.timetuple()))
-    logger.info("get_status_data: convert datetime object to unix time | announced_time_unix=" + str(announced_time_unix))
+    logger.info(
+        "get_status_data: convert datetime object to unix time | announced_time_unix=" + str(announced_time_unix))
 
     raw_table = beautifulsoup_object.findAll('tbody')
     logger.info("get_status_data: table picked out | raw_table=" + str(raw_table))
     raw_table_beautifulsoup_object = BeautifulSoup(str(raw_table[0]), "html.parser")
-    logger.info("get_status_data: convert raw table to beautifulsoup object | raw_table_beautifulsoup_object=" + str(raw_table_beautifulsoup_object))
+    logger.info("get_status_data: convert raw table to beautifulsoup object | raw_table_beautifulsoup_object=" + str(
+        raw_table_beautifulsoup_object))
     table_data_rows = raw_table_beautifulsoup_object.findAll('tr')
-    logger.info("get_status_data: export table data from raw_table_beautifulsoup_object | table_data_rows=" + str(table_data_rows))
+    logger.info("get_status_data: export table data from raw_table_beautifulsoup_object | table_data_rows=" + str(
+        table_data_rows))
 
     status_data_list = [announced_time_unix]
     logger.info("get_status_data: declare status_data_list | status_data_list=" + str(status_data_list))
@@ -107,7 +111,9 @@ def get_status_data(target=''):
     for table_data in table_data_rows:
         logger.info("get_status_data: extracting table data | table_data=" + str(table_data))
         table_data_beautifulsoup_object = BeautifulSoup(str(table_data), "html.parser")
-        logger.info("get_status_data: convert table_data to beautifulsoup object | table_data_beautifulsoup_object=" + str(table_data_beautifulsoup_object))
+        logger.info(
+            "get_status_data: convert table_data to beautifulsoup object | table_data_beautifulsoup_object=" + str(
+                table_data_beautifulsoup_object))
 
         region = region_dictionary[table_data_beautifulsoup_object.findAll('th')[0].text]
         logger.info("get_status_data: extracting region from table data | region=" + str(region))
@@ -125,7 +131,8 @@ def get_status_data(target=''):
         logger.info("get_status_data: declare status data | status_data=" + str(status_data))
 
         status_data_list.append(status_data)
-        logger.info("get_status_data: put status data into status data list | status_data_list=" + str(status_data_list))
+        logger.info(
+            "get_status_data: put status data into status data list | status_data_list=" + str(status_data_list))
 
     logger.info("get_status_data: function ended | status_data_list=" + str(status_data_list))
     return status_data_list
