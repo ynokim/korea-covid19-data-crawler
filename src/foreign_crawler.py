@@ -232,10 +232,10 @@ def get_foreign_data(target=''):
 
     country = table_data_beautifulsoup_object.findAll('th')[0].text
     logger.info("get_foreign_data: extracting country from table data | country=" + str(country))
-    certified = re.sub('[,,명]', '',
-                       re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[0].text))
+    certified = re.sub('[,명]', '',
+                       re.sub('\(사망[  ][0-9,]+\)', '', table_data_beautifulsoup_object.findAll('td')[0].text))
     logger.info("get_foreign_data: extracting certified from table data | certified=" + str(certified))
-    dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
+    dead = re.findall('\(사망[  ]([0-9,]+)\)', table_data_beautifulsoup_object.findAll('td')[0].text)
     logger.info("get_foreign_data: extracting dead from table data | country=" + str(dead))
 
     # print(country_dictionary[re.sub('[  ]', '', country)], re.sub('[  ]', '', country))
@@ -243,7 +243,7 @@ def get_foreign_data(target=''):
     foreign_data = {
         'country': country_dictionary[re.sub('[  ]', '', country)],
         'certified': int(certified),
-        'dead': int(re.sub('[,,명]', '', dead[0])) if dead != [] else 0
+        'dead': int(re.sub('[,명]', '', dead[0])) if dead != [] else 0
     }
     logger.info("get_foreign_data: declare foreign data | foreign_data=" + str(foreign_data))
 
@@ -256,10 +256,10 @@ def get_foreign_data(target=''):
 
         country = table_data_beautifulsoup_object.findAll('td')[0].text
         logger.info("get_foreign_data: extracting country from table data | country=" + str(country))
-        certified = re.sub('[,,명]', '',
-                           re.sub('\(사망[  ][0-9,,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
+        certified = re.sub('[,명]', '',
+                           re.sub('\(사망[  ][0-9,]+\)', '', table_data_beautifulsoup_object.findAll('td')[1].text))
         logger.info("get_foreign_data: extracting certified from table data | certified=" + str(certified))
-        dead = re.findall('\(사망[  ]([0-9,,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
+        dead = re.findall('\(사망[  ]([0-9,]+)\)', table_data_beautifulsoup_object.findAll('td')[1].text)
         logger.info("get_foreign_data: extracting dead from table data | country=" + str(dead))
 
         # print(country_dictionary[re.sub('[  ]', '', country)], re.sub('[  ]', '', country))
@@ -267,7 +267,7 @@ def get_foreign_data(target=''):
         foreign_data = {
             'country': country_dictionary[re.sub('[  ]', '', country)],
             'certified': int(certified),
-            'dead': int(re.sub('[,,명]', '', dead[0])) if dead != [] else 0
+            'dead': int(re.sub('[,명]', '', dead[0])) if dead != [] else 0
         }
         logger.info("get_foreign_data: declare foreign data | foreign_data=" + str(foreign_data))
 
