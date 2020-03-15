@@ -314,6 +314,94 @@ def get_seoul_patient_info(target):
     return patient_info_list
 
 
+def get_incheon_patient_path(target):
+    logger.info("get_incheon_patient_info: function started | target=" + target)
+
+    downloaded_html = urlopen(target)
+    logger.info("get_incheon_patient_info: html downloaded")
+    beautifulsoup_object = BeautifulSoup(downloaded_html, "html.parser")
+    logger.info("get_incheon_patient_info: html parsed to beautifulsoup object")
+
+    raw_patient_path_list_table = beautifulsoup_object.findAll('ol', class_="patient-daily-route")
+
+    patient_path_list = ['incheon']
+    day_in_month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+    for raw_patient_path_table, patient_no in zip(reversed(raw_patient_path_list_table),
+                                                  range(1, len(raw_patient_path_list_table) + 1)):
+        raw_patient_path_beautifulsoup_object = BeautifulSoup(str(raw_patient_path_table), "html.parser")
+
+        for patient_path, path_no in zip(raw_patient_path_beautifulsoup_object.findAll('li'),
+                                         range(len(raw_patient_path_beautifulsoup_object.findAll('li')))):
+            patient_path_text = patient_path.text.strip('​  \n')
+
+            if patient_path_text == '확인중':
+                continue
+            elif re.findall('[0-9]+월[  ][0-9]+', patient_path_text):
+                month_period_identifier = re.findall('일[  ~∼]+[0-9]+([월])', patient_path_text)
+                date_period_identifier = re.findall('[  ~∼]+[0-9]+([일])', patient_path_text)
+                if month_period_identifier == ['월']:
+                    start_month = int(re.findall('([0-9]+)월[  ]', patient_path_text)[0])
+                    start_date = int(re.findall('[  ]([0-9]+)일[  ~∼]+', patient_path_text)[0])
+                    end_month = int(re.findall('[  ~∼]+([0-9]+)월[  ]', patient_path_text)[0])
+                    end_date = int(re.findall('[  ]([0-9]+)일', patient_path_text)[0])
+
+                    for month in range(start_month, end_month + 1):
+                        if month != end_month:
+                            for date in range(start_date, day_in_month[month - 1] + 1):
+                                patient_path = {
+                                    'patient_index': patient_no,
+                                    'path_no': path_no,
+                                    'month': month,
+                                    'date': date,
+                                    'content': patient_path_text
+                                }
+                                patient_path_list.append(patient_path)
+                        else:
+                            for date in range(start_date, end_date + 1):
+                                patient_path = {
+                                    'patient_index': patient_no,
+                                    'path_no': path_no,
+                                    'month': month,
+                                    'date': date,
+                                    'content': patient_path_text
+                                }
+                                patient_path_list.append(patient_path)
+                elif date_period_identifier == ['일']:
+                    month = int(re.findall('([0-9]+)월[  ]', patient_path_text)[0])
+                    start_date = int(re.findall('[  ]([0-9]+)[  ~∼일]+', patient_path_text)[0])
+                    end_date = int(re.findall('[  ~∼]+([0-9]+)일', patient_path_text)[0])
+                    for date in range(start_date, end_date + 1):
+                        patient_path = {
+                            'patient_index': patient_no,
+                            'path_no': path_no,
+                            'month': month,
+                            'date': date,
+                            'content': patient_path_text
+                        }
+                        patient_path_list.append(patient_path)
+                else:
+                    patient_path = {
+                        'patient_index': patient_no,
+                        'path_no': path_no,
+                        'month': int(re.findall('([0-9]+)월[  ]', patient_path_text)[0]),
+                        'date': int(re.findall('월[  ]([0-9]+)', patient_path_text)[0]),
+                        'content': patient_path_text
+                    }
+                    patient_path_list.append(patient_path)
+            else:
+                patient_path = {
+                    'patient_index': patient_no,
+                    'path_no': path_no,
+                    'month': 0,
+                    'date': 0,
+                    'content': patient_path_text
+                }
+                patient_path_list.append(patient_path)
+
+    return patient_path_list
+
+
 def get_patient_data():
     logger.info("get_patient_data: function started")
 
@@ -326,6 +414,10 @@ def get_patient_data():
     patient_busan = [get_busan_patient_info("http://www.busan.go.kr/corona19/index"),
                      get_busan_patient_path("http://www.busan.go.kr/corona19/index")]
     patient_list.append(patient_busan)
+    
+    patient_incheon = [#get_incheon_patient_info("http://www.incheon.go.kr/corona19/IC010001"),
+                       get_incheon_patient_path("http://www.incheon.go.kr/corona19/IC010001")]
+    patient_list.append(patient_incheon)
 
     return patient_list
 
